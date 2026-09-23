@@ -376,7 +376,7 @@ import { firebaseConfig,isFirebaseConfigured } from "./firebase-config.js";
       "auth/missing-app-credential":"The phone security check is missing. Reload the page and retry.",
       "auth/quota-exceeded":"Firebase's SMS quota was reached. Check project billing and Authentication usage limits.",
       "auth/region-not-allowed":"This destination is blocked by the Firebase SMS region policy. Allow India in Authentication settings.",
-      "auth/phone-number-not-whitelisted":"For testing, add this number under Firebase Authentication test phone numbers.
+      "auth/phone-number-not-whitelisted":"For testing, add this number under Firebase Authentication test phone numbers."
     };
     return messages[error?.code] || (error?.code ? "Firebase sign-in failed ("+error.code+"). Check Phone provider, SMS billing, allowed region, and authorized domain settings." : "Sign-in could not be completed. Please try again.");
   }
