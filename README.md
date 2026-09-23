@@ -11,7 +11,7 @@ Serve the folder through a local web server; ES modules and Firebase Auth do not
 1. Create a Firebase project and register a Web app in Firebase Console.
 2. Copy the Web app configuration into firebase-config.js. This client configuration is public and is not a private server credential.
 3. In Authentication > Sign-in method, enable Email/Password, Google, and Phone.
-4. In Authentication > Settings, add your local development host and deployed site host to Authorized domains.
+4. In Authentication > Settings, add your local development host and deployed site host to Authorized domains. Phone authentication does not work on localhost; test OTP on an authorized deployed domain or connect the Firebase Auth Emulator.
 5. Review the Phone authentication region policy and SMS limits. Use Firebase test phone numbers during development.
 6. Deploy over HTTPS, then try email verification, Google sign-in, and phone OTP.
 
@@ -30,7 +30,7 @@ Until Firebase configuration is filled in, the sign-in screen remains visible an
 
 Firebase Authentication verifies the account before the page reveals the SchemeSaathi interface. The sign-in screen is a client-side access gate. GitHub Pages and other static hosting serve site files publicly, so a visitor can still download the JavaScript and scheme catalogue directly. Do not put confidential data or private documents in this repository. Protect private records behind a server that verifies Firebase ID tokens, or use Firebase services with correctly configured Security Rules.
 
-The Firebase Web app configuration in firebase-config.js is public by design. Never put service-account keys or other server credentials in client-side files. Google/Firebase processes phone numbers used for authentication to send verification SMS and help prevent abuse; carrier charges may apply. SchemeSaathi does not request Aadhaar numbers, income details, or government account credentials.
+The Firebase Web app configuration in firebase-config.js is public by design. Never put service-account keys or other server credentials in client-side files. Phone numbers supplied for authentication are sent to and stored by Google to send verification SMS and help prevent spam and abuse; carrier charges may apply. SchemeSaathi does not request Aadhaar numbers, income details, or government account credentials.
 
 SchemeSaathi is an independent guide, not a government service. The finder filters by selected topics and does not determine eligibility. The directory is curated and incomplete. Programme terms, benefits, documents, and application windows may change; confirm all details with the linked official source.
 
