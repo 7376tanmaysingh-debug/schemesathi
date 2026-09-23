@@ -500,7 +500,7 @@ import { firebaseConfig,isFirebaseConfigured } from "./firebase-config.js";
   async function startAuthentication() {
     if(!isFirebaseConfigured()) return;
     try {
-      auth=getAuth(initializeApp(firebaseConfig)); configuredUi.hidden=false; authSetup.hidden=true; bindAuth();
+      auth=getAuth(initializeApp(firebaseConfig)); configuredUi.hidden=false; configuredUi.inert=false; authSetup.hidden=true; bindAuth();
       await setPersistence(auth,browserLocalPersistence);
       onAuthStateChanged(auth,user=>{
         const revision=++authRevision;
