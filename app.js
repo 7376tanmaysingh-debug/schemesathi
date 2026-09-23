@@ -1,7 +1,11 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { getAuth,onAuthStateChanged,setPersistence,browserLocalPersistence,createUserWithEmailAndPassword,signInWithEmailAndPassword,sendEmailVerification,sendPasswordResetEmail,GoogleAuthProvider,signInWithPopup,signInWithRedirect,getRedirectResult,signInWithPhoneNumber,RecaptchaVerifier,reload,signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import { firebaseConfig,isFirebaseConfigured } from "./firebase-config.js";
+
 (() => {
   "use strict";
 
-  const schemes = window.SCHEMESAATHI_SCHEMES || [];
+  let schemes = [];
   const categoryNames = {
     all:"All topics",
     health:"Health",
@@ -17,7 +21,8 @@
     view:"all",
     query:"",
     sort:"featured",
-    saved:loadSaved()
+    saved:new Set(),
+    user:null
   };
   const $ = (selector, root=document) => root.querySelector(selector);
   const $$ = (selector, root=document) => [...root.querySelectorAll(selector)];
@@ -27,17 +32,18 @@
   const privacyDialog=$("#privacy-dialog");
   let toastTimer;
 
-  function loadSaved() {
+  function savedStorageKey(uid) { return "schemesaathi-saved:"+uid; }
+
+  function loadSaved(uid) {
     try {
-      const items=JSON.parse(localStorage.getItem("schemesaathi-saved") || "[]");
+      const items=JSON.parse(localStorage.getItem(savedStorageKey(uid)) || "[]");
       return new Set(Array.isArray(items) ? items.filter(item=>typeof item==="string") : []);
-    } catch {
-      return new Set();
-    }
+    } catch { return new Set(); }
   }
 
   function saveState() {
-    try { localStorage.setItem("schemesaathi-saved", JSON.stringify([...state.saved])); }
+    if(!state.user) return;
+    try { localStorage.setItem(savedStorageKey(state.user.uid),JSON.stringify([...state.saved])); }
     catch { showToast("Your browser could not save this change."); }
   }
 
@@ -340,6 +346,178 @@
   });
 
   window.addEventListener("hashchange",handleRoute);
-  render();
-  handleRoute();
+
+  let auth=null, recaptchaVerifier=null, phoneConfirmation=null, emailMode="sign-in", authRevision=0;
+  const authScreen=$("#auth-screen"), protectedSite=$("#protected-site"), authSetup=$("#auth-setup-message");
+  const configuredUi=$("#auth-configured-ui"), authOptions=$("#auth-options"), verificationPanel=$("#verification-panel");
+
+  function authMessage(message,tone="info") {
+    const node=$("#auth-status"); node.textContent=message; node.dataset.state=tone;
+  }
+  function authError(error) {
+    const messages={
+      "auth/invalid-email":"Enter a valid email address.",
+      "auth/weak-password":"Choose a password with at least 6 characters.",
+      "auth/invalid-credential":"That email or password did not match.",
+      "auth/email-already-in-use":"An account already uses this email. Sign in or reset your password.",
+      "auth/too-many-requests":"Too many attempts. Wait a little, then try again.",
+      "auth/operation-not-allowed":"This sign-in method is not enabled in Firebase yet.",
+      "auth/unauthorized-domain":"This website domain is not allowed in Firebase settings.",
+      "auth/popup-blocked":"Your browser blocked the Google sign-in window.",
+      "auth/popup-closed-by-user":"The Google sign-in window was closed before sign-in finished.",
+      "auth/invalid-phone-number":"Enter a valid number in international format, such as +91 followed by your number.",
+      "auth/invalid-verification-code":"That code is not correct. Check it and try again.",
+      "auth/code-expired":"That code expired. Request a new one.",
+      "auth/captcha-check-failed":"The security check did not complete. Try again.",
+      "auth/network-request-failed":"Check your internet connection and try again."
+    };
+    return messages[error?.code] || "Sign-in could not be completed. Please try again.";
+  }
+  function authBusy(value) { $$("#auth-configured-ui button").forEach(button=>button.disabled=value); }
+  function showAuthOptions() { authOptions.hidden=false; verificationPanel.hidden=true; authMessage(""); }
+  function requireEmailVerification(user) {
+    protectedSite.hidden=true; authScreen.hidden=false; authOptions.hidden=true; verificationPanel.hidden=false;
+    $("#verification-address").textContent=user.email || "your email address";
+    authMessage("Verify your email before continuing.");
+  }
+  function hideProtected() {
+    protectedSite.hidden=true; authScreen.hidden=false; state.user=null; state.saved=new Set();
+  }
+  function clearRecaptcha() {
+    if(recaptchaVerifier) { try { recaptchaVerifier.clear(); } catch {} recaptchaVerifier=null; }
+    $("#recaptcha-container").replaceChildren();
+  }
+  async function admitUser(user,revision) {
+    const ids=(user.providerData||[]).map(item=>item.providerId);
+    if(ids.includes("password")&&!user.emailVerified&&!ids.some(id=>id==="google.com"||id==="phone")) {
+      requireEmailVerification(user); return;
+    }
+    if(!ids.some(id=>id==="password"||id==="google.com"||id==="phone")) {
+      await signOut(auth); showAuthOptions(); authMessage("This account does not use an enabled sign-in method.","error"); return;
+    }
+    try {
+      const catalog=await import("./scheme-data.js");
+      if(revision!==authRevision||auth.currentUser?.uid!==user.uid) return;
+      schemes=catalog.default; state.user=user; state.saved=loadSaved(user.uid);
+      $("#account-label").textContent=user.email||user.phoneNumber||"Signed in";
+      authScreen.hidden=true; protectedSite.hidden=false; showAuthOptions(); render(); handleRoute();
+    } catch {
+      hideProtected(); showAuthOptions(); authMessage("We could not load the site. Refresh the page and try again.","error");
+    }
+  }
+  async function sendPhoneOtp(event) {
+    event.preventDefault();
+    const phone=$("#phone-number").value.trim().replace(/[\s()-]/g,"");
+    if(!/^\+[1-9][0-9]{7,14}$/.test(phone)) { authMessage("Use international format, for example +91 98765 43210.","error"); return; }
+    authBusy(true); authMessage("Preparing a secure phone check…");
+    try {
+      if(!recaptchaVerifier) recaptchaVerifier=new RecaptchaVerifier(auth,$("#recaptcha-container"),{size:"normal"});
+      await recaptchaVerifier.render();
+      phoneConfirmation=await signInWithPhoneNumber(auth,phone,recaptchaVerifier);
+      $("#otp-form").hidden=false; $("#send-phone-code").hidden=true; $("#otp-code").focus();
+      authMessage("We sent a code to "+phone+". Enter it below to continue.");
+    } catch(error) { clearRecaptcha(); authMessage(authError(error),"error"); }
+    finally { authBusy(false); }
+  }
+  function bindAuth() {
+    $$("[data-auth-tab]").forEach(tab=>tab.addEventListener("click",()=>{
+      const email=tab.dataset.authTab==="email";
+      $$(".auth-tab").forEach(item=>{const active=item===tab;item.classList.toggle("active",active);item.setAttribute("aria-selected",String(active));});
+      $("#email-panel").hidden=!email; $("#phone-panel").hidden=email; authMessage("");
+    }));
+    $("#email-mode-toggle").addEventListener("click",()=>{
+      emailMode=emailMode==="sign-in"?"sign-up":"sign-in"; const signup=emailMode==="sign-up";
+      $("#email-submit").innerHTML=signup?'Create account <span aria-hidden="true">↗</span>':'Sign in <span aria-hidden="true">↗</span>';
+      $("#email-mode-prompt").textContent=signup?"Already have an account?":"New here?";
+      $("#email-mode-toggle").textContent=signup?"Sign in":"Create an account";
+      $("#forgot-password").hidden=signup; $("#email-password").autocomplete=signup?"new-password":"current-password"; authMessage("");
+    });
+    $("#email-form").addEventListener("submit",async event=>{
+      event.preventDefault(); const email=$("#email-address").value.trim(), password=$("#email-password").value;
+      authBusy(true); authMessage(emailMode==="sign-up"?"Creating your account…":"Signing in…");
+      try {
+        if(emailMode==="sign-up") {
+          const result=await createUserWithEmailAndPassword(auth,email,password);
+          await sendEmailVerification(result.user); requireEmailVerification(result.user);
+          authMessage("We sent a verification link to "+email+". Open it, then return here.");
+        } else { await signInWithEmailAndPassword(auth,email,password); }
+      } catch(error) { authMessage(authError(error),"error"); }
+      finally { authBusy(false); }
+    });
+    $("#forgot-password").addEventListener("click",async()=>{
+      const email=$("#email-address").value.trim();
+      if(!email) {authMessage("Enter your email address first.","error");$("#email-address").focus();return;}
+      authBusy(true);
+      try {await sendPasswordResetEmail(auth,email);authMessage("If an account uses that email, Firebase will send a reset link.");}
+      catch(error){authMessage(authError(error),"error");}
+      finally{authBusy(false);}
+    });
+    $("#google-sign-in").addEventListener("click",async()=>{
+      authBusy(true); authMessage("Connecting to Google…"); const provider=new GoogleAuthProvider();
+      try {
+        if(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {await signInWithRedirect(auth,provider);return;}
+        await signInWithPopup(auth,provider);
+      } catch(error) {
+        if(error?.code==="auth/popup-blocked") {
+          try {await signInWithRedirect(auth,new GoogleAuthProvider());return;}
+          catch(redirectError){authMessage(authError(redirectError),"error");}
+        } else authMessage(authError(error),"error");
+        authBusy(false);
+      }
+    });
+    $("#phone-form").addEventListener("submit",sendPhoneOtp);
+    $("#otp-form").addEventListener("submit",async event=>{
+      event.preventDefault(); if(!phoneConfirmation){authMessage("Request a code first.","error");return;}
+      authBusy(true); authMessage("Verifying your code…");
+      try {await phoneConfirmation.confirm($("#otp-code").value.trim());}
+      catch(error){authMessage(authError(error),"error");}
+      finally{authBusy(false);}
+    });
+    $("#change-number").addEventListener("click",()=>{
+      phoneConfirmation=null; $("#otp-form").reset(); $("#otp-form").hidden=true;
+      $("#send-phone-code").hidden=false; $("#otp-code").value=""; clearRecaptcha(); authMessage("");
+    });
+    $("#check-verification").addEventListener("click",async()=>{
+      if(!auth.currentUser){showAuthOptions();return;}
+      authBusy(true); authMessage("Checking your email verification…");
+      try {
+        await reload(auth.currentUser);
+        if(auth.currentUser?.emailVerified) await admitUser(auth.currentUser,authRevision);
+        else authMessage("Your email is not verified yet. Open the link, then try again.","error");
+      } catch(error){authMessage(authError(error),"error");}
+      finally{authBusy(false);}
+    });
+    $("#resend-verification").addEventListener("click",async()=>{
+      if(!auth.currentUser){showAuthOptions();return;}
+      authBusy(true);
+      try {await sendEmailVerification(auth.currentUser);authMessage("A new verification link has been sent.");}
+      catch(error){authMessage(authError(error),"error");}
+      finally{authBusy(false);}
+    });
+    $("#verification-sign-out").addEventListener("click",()=>signOut(auth));
+    $("#sign-out").addEventListener("click",async()=>{hideProtected();await signOut(auth);});
+  }
+  async function startAuthentication() {
+    if(!isFirebaseConfigured()) return;
+    try {
+      auth=getAuth(initializeApp(firebaseConfig)); configuredUi.hidden=false; authSetup.hidden=true; bindAuth();
+      await setPersistence(auth,browserLocalPersistence);
+      onAuthStateChanged(auth,user=>{
+        const revision=++authRevision;
+        if(!user) {
+          hideProtected(); showAuthOptions(); clearRecaptcha(); $("#otp-form").hidden=true;
+          $("#send-phone-code").hidden=false; $("#account-label").textContent=""; return;
+        }
+        admitUser(user,revision);
+      });
+      try {await getRedirectResult(auth);}
+      catch(error){authMessage(authError(error),"error");}
+    } catch {
+      authSetup.hidden=false; configuredUi.hidden=true;
+      authSetup.querySelector("strong").textContent="Sign-in needs configuration";
+      authSetup.querySelector("p").textContent="Check Firebase settings, enabled providers, and allowed site domains.";
+    }
+  }
+
+  startAuthentication();
 })();
