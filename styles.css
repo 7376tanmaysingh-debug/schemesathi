@@ -80,3 +80,5 @@
 @media(max-width:980px){.auth-screen{grid-template-columns:minmax(0,.9fr) minmax(420px,1.1fr)}.auth-story{padding-left:6%;padding-right:6%}.auth-side{padding-left:35px;padding-right:35px}.auth-story h1{font-size:62px}}
 @media(max-width:720px){.auth-screen{display:block;min-height:100vh}.auth-story{display:none}.auth-side{min-height:100vh;padding:28px 18px 22px}.auth-card-wrap{max-width:420px}.auth-mobile-brand{display:inline-flex}.auth-card{padding:25px 21px}.auth-heading h2{font-size:27px}.account-label{display:none}}
 @media(max-width:390px){.auth-form-links{align-items:flex-start;flex-direction:column}}
+
+#auth-configured-ui[inert]{opacity:.56;filter:grayscale(.18)}
