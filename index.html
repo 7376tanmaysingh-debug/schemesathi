@@ -3,39 +3,44 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f7f6f1">
-  <meta name="description" content="Find Indian government schemes that may fit your next step. Explore benefits, eligibility, and official application links with SchemeSaathi.">
+  <meta name="theme-color" content="#f6f6f0">
+  <meta name="description" content="Explore a curated guide to Indian government schemes. Find a starting point, understand the basics, and continue to official sources.">
   <title>SchemeSaathi — Find support for your next step</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script src="scheme-data.js" defer></script>
   <script src="app.js" defer></script>
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
-    <a class="brand" href="#" aria-label="SchemeSaathi home"><span class="brand-mark">S<span>+</span></span><span>scheme<span class="brand-light">saathi</span></span></a>
-    <nav aria-label="Main navigation"><a href="#finder">Find by need</a><a href="#schemes">Explore schemes</a><a href="#how-it-works">How it works</a></nav>
-    <a class="saved-link" href="#schemes" id="saved-shortcut"><span aria-hidden="true">♡</span> Saved <span class="saved-count" id="saved-count">0</span></a>
+    <a class="brand" href="#home" aria-label="SchemeSaathi home"><span class="brand-mark">S<span>+</span></span><span>scheme<span class="brand-light">saathi</span></span></a>
+    <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="site-nav"><span></span><span></span></button>
+    <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+      <a href="#finder">Find by need</a><a href="#schemes">Explore schemes</a><a href="#how-it-works">How it works</a><a href="#about">About</a>
+    </nav>
+    <a class="saved-link" href="#saved" id="saved-shortcut"><span aria-hidden="true">♡</span><span>Saved</span><span class="saved-count" id="saved-count">0</span></a>
   </header>
 
-  <main>
-    <section class="hero">
+  <main id="main">
+    <section class="hero" id="home" aria-labelledby="hero-title">
       <div class="hero-copy">
         <div class="eyebrow"><span class="eyebrow-dot"></span> YOUR GUIDE TO PUBLIC BENEFITS</div>
-        <h1>A little support<br>can go a <em>long way.</em></h1>
+        <h1 id="hero-title">A little support<br>can go a <em>long way.</em></h1>
         <p>Discover government schemes that could help you, your family, or your next big idea move forward.</p>
-        <a class="button button-dark" href="#finder">Find your scheme <span aria-hidden="true">↗</span></a>
-        <div class="hero-note"><span class="note-check">✓</span> Clear information. Official application links.</div>
+        <div class="hero-actions"><a class="button button-dark" href="#finder">Find your starting point <span aria-hidden="true">↗</span></a><a class="quiet-link" href="#schemes">Browse all schemes <span aria-hidden="true">↓</span></a></div>
+        <div class="hero-note"><span class="note-check" aria-hidden="true">✓</span> Clear summaries. Official sources. No sign-up.</div>
       </div>
-      <div class="hero-art" aria-label="Illustration of a person planting a growing seedling">
+      <div class="hero-art" aria-hidden="true">
         <div class="art-orbit orbit-one"></div><div class="art-orbit orbit-two"></div>
         <div class="sun"></div><div class="plant-pot"><div class="pot-top"></div><div class="pot-body"></div></div>
         <div class="stem"></div><div class="leaf leaf-left"></div><div class="leaf leaf-right"></div>
         <span class="art-spark spark-a">✳</span><span class="art-spark spark-b">✦</span>
         <div class="art-label"><span>Small steps,</span><strong>brighter futures.</strong></div>
       </div>
-      <div class="hero-bottom"><span>BUILT FOR EVERYDAY INDIA</span><span>01 / 04 <i></i> Discover</span></div>
+      <div class="hero-bottom"><span>MADE FOR EVERYDAY INDIA</span><span>01 <i></i> A guide to your next step</span></div>
     </section>
 
     <section class="finder-section section-wrap" id="finder" aria-labelledby="finder-title">
@@ -46,56 +51,89 @@
       <form id="finder-form">
         <fieldset class="topic-grid">
           <legend class="sr-only">Choose the kinds of support you are looking for</legend>
-          <label class="topic-option"><input type="checkbox" name="support" value="health"><span class="topic-icon">✚</span><span><strong>Health &amp; care</strong><small>Medical and hospital support</small></span><span class="topic-check">✓</span></label>
-          <label class="topic-option"><input type="checkbox" name="support" value="farmers"><span class="topic-icon">⌁</span><span><strong>Farming</strong><small>Farming, crops, and pensions</small></span><span class="topic-check">✓</span></label>
-          <label class="topic-option"><input type="checkbox" name="support" value="housing"><span class="topic-icon">⌂</span><span><strong>Home &amp; energy</strong><small>Housing and rooftop solar</small></span><span class="topic-check">✓</span></label>
-          <label class="topic-option"><input type="checkbox" name="support" value="women"><span class="topic-icon">✿</span><span><strong>Women &amp; family</strong><small>Family savings and clean cooking</small></span><span class="topic-check">✓</span></label>
-          <label class="topic-option"><input type="checkbox" name="support" value="business"><span class="topic-icon">↗</span><span><strong>Work &amp; business</strong><small>Skills, credit, and enterprise</small></span><span class="topic-check">✓</span></label>
+          <label class="topic-option"><input type="checkbox" name="support" value="health"><span class="topic-icon" aria-hidden="true">✚</span><span><strong>Health &amp; care</strong><small>Medical and hospital support</small></span><span class="topic-check" aria-hidden="true">✓</span></label>
+          <label class="topic-option"><input type="checkbox" name="support" value="farmers"><span class="topic-icon" aria-hidden="true">⌁</span><span><strong>Farming</strong><small>Farming, crops, and pensions</small></span><span class="topic-check" aria-hidden="true">✓</span></label>
+          <label class="topic-option"><input type="checkbox" name="support" value="housing"><span class="topic-icon" aria-hidden="true">⌂</span><span><strong>Home &amp; energy</strong><small>Housing and rooftop solar</small></span><span class="topic-check" aria-hidden="true">✓</span></label>
+          <label class="topic-option"><input type="checkbox" name="support" value="women"><span class="topic-icon" aria-hidden="true">✿</span><span><strong>Women &amp; family</strong><small>Family savings and clean cooking</small></span><span class="topic-check" aria-hidden="true">✓</span></label>
+          <label class="topic-option"><input type="checkbox" name="support" value="business"><span class="topic-icon" aria-hidden="true">↗</span><span><strong>Work &amp; business</strong><small>Skills, credit, and enterprise</small></span><span class="topic-check" aria-hidden="true">✓</span></label>
         </fieldset>
         <div class="finder-actions"><button class="button button-dark" type="submit">Show my shortlist <span aria-hidden="true">↘</span></button><span class="finder-privacy">No personal details needed. Your selections stay in this browser.</span></div>
       </form>
       <p class="finder-status" id="finder-status" role="status" hidden></p>
     </section>
 
-    <section class="explore section-wrap" id="schemes">
+    <section class="explore section-wrap" id="schemes" aria-labelledby="schemes-title">
       <div class="section-heading">
-        <div><div class="eyebrow">A GOOD PLACE TO START</div><h2>What are you looking for?</h2></div>
-        <p>Browse popular schemes, or search for something specific.</p>
+        <div><div class="eyebrow">A GOOD PLACE TO START</div><h2 id="schemes-title">Explore schemes</h2></div>
+        <p>Search the curated directory or browse by topic.</p>
       </div>
       <div class="search-row">
-        <label class="search-box"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Try “health”, “farmer”, or “women”" autocomplete="off"><kbd>⌘ K</kbd></label>
-        <label class="sort-box"><span class="sr-only">Sort schemes</span><select id="sort"><option value="popular">Popular first</option><option value="az">Name A–Z</option></select><span aria-hidden="true">⌄</span></label>
+        <label class="search-box"><span aria-hidden="true">⌕</span><span class="sr-only">Search schemes</span><input id="search" type="search" placeholder="Try “health”, “farmer”, or “women”" autocomplete="off"><kbd>Ctrl K</kbd><button class="search-clear" id="search-clear" type="button" aria-label="Clear search" hidden>×</button></label>
+        <label class="sort-box"><span class="sr-only">Sort schemes</span><select id="sort"><option value="featured">Featured</option><option value="az">Name A–Z</option></select><span aria-hidden="true">⌄</span></label>
       </div>
-      <div class="filters" role="group" aria-label="Filter schemes by category">
-        <button class="filter-chip active" data-category="all">All schemes <span id="all-count"></span></button>
-        <button class="filter-chip" data-category="health">Health</button>
-        <button class="filter-chip" data-category="farmers">For farmers</button>
-        <button class="filter-chip" data-category="women">Women &amp; families</button>
-        <button class="filter-chip" data-category="housing">Housing</button>
-        <button class="filter-chip" data-category="business">Business</button>
+      <div class="filters" id="filters" role="group" aria-label="Filter schemes by category">
+        <button class="filter-chip active" type="button" data-category="all">All topics <span data-category-count="all"></span></button>
+        <button class="filter-chip" type="button" data-category="health">Health <span data-category-count="health"></span></button>
+        <button class="filter-chip" type="button" data-category="farmers">For farmers <span data-category-count="farmers"></span></button>
+        <button class="filter-chip" type="button" data-category="women">Women &amp; family <span data-category-count="women"></span></button>
+        <button class="filter-chip" type="button" data-category="housing">Home &amp; energy <span data-category-count="housing"></span></button>
+        <button class="filter-chip" type="button" data-category="business">Work &amp; business <span data-category-count="business"></span></button>
       </div>
-      <div class="results-meta"><span id="results-label">Popular schemes</span><button class="text-button" id="clear-filters" hidden>Clear filters <span>×</span></button></div>
+      <div class="results-meta"><span id="results-label" aria-live="polite">Popular starting points</span><button class="text-button" id="clear-filters" type="button" hidden>Clear filters <span aria-hidden="true">×</span></button></div>
       <div class="scheme-grid" id="scheme-grid" aria-live="polite"></div>
-      <div class="empty-state" id="empty-state" hidden><span>⌕</span><h3>No schemes found</h3><p>Try another search or clear your filters.</p><button class="button button-outline" id="empty-clear">Clear filters</button></div>
-      <p class="disclaimer">SchemeSaathi is an independent guide. Details can change; always confirm eligibility and current rules on the official scheme website before applying.</p>
+      <div class="empty-state" id="empty-state" hidden><span aria-hidden="true">⌕</span><h3 id="empty-title">No schemes found</h3><p id="empty-copy">Try another search or clear your filters.</p><button class="button button-outline" id="empty-clear" type="button">Show all schemes</button></div>
+      <p class="disclaimer">SchemeSaathi is an independent guide, not a government service. Scheme information can change. Confirm eligibility, benefits, documents, and application dates with the linked official source.</p>
     </section>
 
     <section class="how section-wrap" id="how-it-works">
       <div class="how-intro"><div class="eyebrow">MADE TO FEEL SIMPLE</div><h2>From “I wonder”<br>to “I can apply.”</h2><p>Government support can be hard to find. We help you get to the useful bits, faster.</p></div>
       <div class="how-steps">
-        <article><span class="step-number">01</span><div class="step-icon">⌕</div><h3>Explore</h3><p>Browse by the kind of support you need.</p></article>
-        <article><span class="step-number">02</span><div class="step-icon">↗</div><h3>Understand</h3><p>Get a clear overview of benefits and eligibility.</p></article>
-        <article><span class="step-number">03</span><div class="step-icon">✓</div><h3>Take the next step</h3><p>Continue to an official source to learn more or apply.</p></article>
+        <article><span class="step-number">01</span><div class="step-icon" aria-hidden="true">⌕</div><h3>Explore</h3><p>Browse by the kind of support you need.</p></article>
+        <article><span class="step-number">02</span><div class="step-icon" aria-hidden="true">↗</div><h3>Understand</h3><p>Read a plain-language overview and see what to verify.</p></article>
+        <article><span class="step-number">03</span><div class="step-icon" aria-hidden="true">✓</div><h3>Take the next step</h3><p>Continue to an official source to learn more or apply.</p></article>
+      </div>
+    </section>
+
+    <section class="about section-wrap" id="about">
+      <div class="about-visual"><span class="about-asterisk">✳</span><span class="about-circle"></span><div class="about-stamp">INDEPENDENT<br>PUBLIC BENEFIT<br>GUIDE</div></div>
+      <div class="about-copy"><div class="eyebrow">ABOUT SCHEMESAATHI</div><h2>Good information<br>should be easier to find.</h2><p>SchemeSaathi helps people discover public support programmes and understand where to check the details. We keep the first step simple: browse, save a scheme, then verify the current rules with the official source.</p><div class="about-points"><span><b>01</b> Plain-language starting points</span><span><b>02</b> Links to official sources</span><span><b>03</b> No eligibility promises</span></div></div>
+    </section>
+
+    <section class="faq section-wrap" id="faq">
+      <div><div class="eyebrow">A FEW THINGS TO KNOW</div><h2>Frequently asked<br>questions</h2></div>
+      <div class="faq-list">
+        <details><summary>Does SchemeSaathi decide if I qualify?</summary><p>No. The finder creates a shortlist from topics you select. It does not check identity, income, location, documents, or government records. Only the scheme authority can confirm eligibility.</p></details>
+        <details><summary>Is SchemeSaathi a government website?</summary><p>No. SchemeSaathi is an independent guide and is not affiliated with or endorsed by any government department. Official programme links are provided so you can verify details at the source.</p></details>
+        <details><summary>Are all schemes listed here?</summary><p>No. This is a curated starting directory, not a complete catalogue. Scheme availability and rules can change, and some benefits are administered differently by state or district.</p></details>
+        <details><summary>What happens to the topics and saved schemes I choose?</summary><p>Finder choices are used in this browser to filter the directory and are not sent to a server. Saved schemes are stored locally in your browser. Clearing this browser's site data removes them.</p></details>
       </div>
     </section>
 
     <section class="closing">
-      <div><div class="eyebrow">YOUR NEXT STEP STARTS HERE</div><h2>Good things are<br>within reach.</h2><a class="button button-light" href="#schemes">Explore schemes <span aria-hidden="true">↗</span></a></div>
-      <div class="closing-mark">S<span>+</span></div>
+      <div><div class="eyebrow">YOUR NEXT STEP STARTS HERE</div><h2>Good things are<br>within reach.</h2><a class="button button-light" href="#finder">Find a starting point <span aria-hidden="true">↗</span></a></div>
+      <div class="closing-mark" aria-hidden="true">S<span>+</span></div>
     </section>
   </main>
 
-  <footer><a class="brand" href="#"><span class="brand-mark">S<span>+</span></span><span>scheme<span class="brand-light">saathi</span></span></a><span>Made to make support easier to find.</span><span>© 2026 SchemeSaathi</span></footer>
-  <dialog class="detail-dialog" id="detail-dialog" aria-labelledby="dialog-title"><button class="dialog-close" id="dialog-close" aria-label="Close details">×</button><div id="dialog-content"></div></dialog>
+  <footer class="site-footer">
+    <a class="brand" href="#home"><span class="brand-mark">S<span>+</span></span><span>scheme<span class="brand-light">saathi</span></span></a>
+    <span class="footer-tagline">Made to make support easier to find.</span>
+    <div class="footer-links"><a href="#about">About</a><a href="#faq">FAQs</a><button type="button" id="privacy-open">Privacy</button><a href="https://github.com/7376tanmaysingh-debug/schemesathi/issues" target="_blank" rel="noopener noreferrer">Feedback ↗</a></div>
+    <span class="copyright">© 2026 SchemeSaathi</span>
+  </footer>
+
+  <dialog class="detail-dialog" id="detail-dialog" aria-labelledby="dialog-title">
+    <button class="dialog-close" id="dialog-close" type="button" aria-label="Close details">×</button>
+    <div id="dialog-content"></div>
+  </dialog>
+  <dialog class="detail-dialog privacy-dialog" id="privacy-dialog" aria-labelledby="privacy-title">
+    <button class="dialog-close" id="privacy-close" type="button" aria-label="Close privacy details">×</button>
+    <span class="dialog-category">YOUR CHOICES</span><h2 id="privacy-title">Privacy on SchemeSaathi</h2>
+    <p class="dialog-summary">This static website does not ask for your name, phone number, Aadhaar number, income, or account details.</p>
+    <div class="dialog-section"><h3>What is stored here</h3><p>Your saved scheme IDs are stored in this browser's local storage so they remain available on this device. Finder choices are used only to filter the current page and are not saved.</p></div>
+    <div class="dialog-section"><h3>Official websites</h3><p>When you follow a scheme link, you leave SchemeSaathi. The destination's privacy policy and application process apply there.</p></div>
+    <div class="dialog-actions"><button class="button button-outline" id="clear-saved" type="button">Clear saved schemes</button></div>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 </body>
 </html>

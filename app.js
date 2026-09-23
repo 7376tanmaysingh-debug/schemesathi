@@ -1,61 +1,344 @@
-const schemes = [
-  {id:"ayushman-bharat",name:"Ayushman Bharat PM-JAY",category:"health",icon:"✚",categoryLabel:"Health",summary:"Health cover for eligible families to access hospital care.",benefit:"Hospital care cover",popular:1,who:"Eligible families identified through government criteria. Eligibility can vary by state and is checked through the official portal.",details:"The scheme provides cashless access to covered secondary and tertiary hospital care at participating hospitals, subject to current programme rules and package limits.",url:"https://pmjay.gov.in/"},
-  {id:"pm-kisan",name:"PM-KISAN",category:"farmers",icon:"⌁",categoryLabel:"For farmers",summary:"Income support for eligible landholding farmer families.",benefit:"Direct income support",popular:2,who:"Eligible landholding farmer families, subject to exclusions and verification under current guidelines.",details:"Benefits are paid in instalments to eligible beneficiaries. Aadhaar, land records, and e-KYC requirements may apply. Confirm your status and current requirements on the official portal.",url:"https://pmkisan.gov.in/"},
-  {id:"pmay-urban",name:"PMAY-Urban 2.0",category:"housing",icon:"⌂",categoryLabel:"Housing",summary:"Support to help eligible urban families access a pucca home.",benefit:"Housing assistance",popular:3,who:"Eligible urban households that do not own a pucca house anywhere in India, subject to income and other scheme criteria.",details:"PMAY-Urban 2.0 includes different verticals for eligible beneficiaries. Application routes and assistance depend on the selected vertical and current official guidelines.",url:"https://pmay-urban.gov.in/"},
-  {id:"sukanya-samriddhi",name:"Sukanya Samriddhi Account",category:"women",icon:"✿",categoryLabel:"Women & families",summary:"A savings account designed for the future of a girl child.",benefit:"Long-term savings",popular:4,who:"A guardian can open an account for a girl child who meets the age requirements. Deposit limits and account rules apply.",details:"This small savings scheme is available through participating banks and post offices. Interest rates and tax treatment are set by current government rules; check official sources before opening.",url:"https://www.indiapost.gov.in/"},
-  {id:"pm-ujjwala",name:"Pradhan Mantri Ujjwala Yojana",category:"women",icon:"◉",categoryLabel:"Women & families",summary:"LPG connections for eligible households that need clean cooking fuel.",benefit:"Clean cooking access",popular:5,who:"Adult women from eligible low-income households without an LPG connection, subject to the scheme's current eligibility rules.",details:"Applications are handled through participating LPG distributors and the official portal. Required documents and benefits should be confirmed with the distributor.",url:"https://www.pmuy.gov.in/"},
-  {id:"pm-mudra",name:"Pradhan Mantri MUDRA Yojana",category:"business",icon:"↗",categoryLabel:"Business",summary:"Loans through lenders for eligible small business activities.",benefit:"Small business finance",popular:6,who:"Individuals and micro enterprises seeking finance for eligible income-generating activities. Lenders assess each application.",details:"MUDRA supports loans through member lending institutions. Loan terms, eligibility, and approval are determined by the lender; the scheme does not guarantee loan approval.",url:"https://www.mudra.org.in/"},
-  {id:"pm-vishwakarma",name:"PM Vishwakarma",category:"business",icon:"✳",categoryLabel:"Business",summary:"Training, tools, and credit support for eligible traditional artisans.",benefit:"Skills & credit support",popular:7,who:"Artisans and craftspeople working in one of the notified traditional trades, subject to enrolment and verification requirements.",details:"The programme can include recognition, skill training, toolkit incentives, and concessional credit, subject to current guidelines and verification.",url:"https://pmvishwakarma.gov.in/"},
-  {id:"stand-up-india",name:"Stand-Up India",category:"business",icon:"↑",categoryLabel:"Business",summary:"Bank loans to support eligible women and SC/ST entrepreneurs.",benefit:"Enterprise loans",popular:8,who:"Eligible women or SC/ST entrepreneurs seeking to establish a greenfield enterprise, subject to lender and scheme criteria.",details:"Loans are provided through banks for eligible greenfield ventures. Loan size, margin, and repayment terms are governed by the current scheme and lender assessment.",url:"https://www.standupmitra.in/"},
-  {id:"pm-kisan-maandhan",name:"PM-Kisan Maandhan Yojana",category:"farmers",icon:"◷",categoryLabel:"For farmers",summary:"A contributory pension scheme for eligible small and marginal farmers.",benefit:"Pension planning",popular:9,who:"Small and marginal farmers within the scheme's age and landholding limits. Contributions and exclusions apply.",details:"Eligible subscribers contribute monthly amounts based on age at entry. The pension and other conditions are governed by the current official guidelines.",url:"https://maandhan.in/"},
-  {id:"pmay-gramin",name:"PMAY-Gramin",category:"housing",icon:"⌂",categoryLabel:"Housing",summary:"Rural housing assistance for eligible households.",benefit:"Rural housing support",popular:10,who:"Rural households identified through the official process and meeting current eligibility and verification criteria.",details:"Assistance is linked to approved beneficiaries and local implementation. Check your status with your Gram Panchayat or the official portal.",url:"https://pmayg.nic.in/"},
-  {id:"pm-surya-ghar",name:"PM Surya Ghar: Muft Bijli Yojana",category:"housing",icon:"☼",categoryLabel:"Housing",summary:"Support for eligible households to install rooftop solar systems.",benefit:"Rooftop solar subsidy",popular:11,who:"Residential electricity consumers, subject to technical requirements, vendor participation, and current scheme guidelines.",details:"Applications and subsidy processing are handled through the national portal. Check current eligibility, approved vendors, and installation requirements before proceeding.",url:"https://pmsuryaghar.gov.in/"},
-  {id:"pm-fasal-bima",name:"Pradhan Mantri Fasal Bima Yojana",category:"farmers",icon:"❋",categoryLabel:"For farmers",summary:"Crop insurance support for farmers against specified crop losses.",benefit:"Crop risk cover",popular:12,who:"Farmers growing notified crops in notified areas during an active season, subject to enrolment timelines and scheme rules.",details:"Coverage and premium depend on crop, location, season, and current notifications. Apply within the season's window and confirm details with your insurer or local agriculture office.",url:"https://pmfby.gov.in/"}
-];
+(() => {
+  "use strict";
 
-const grid=document.querySelector("#scheme-grid");
-const search=document.querySelector("#search");
-const empty=document.querySelector("#empty-state");
-const clearButton=document.querySelector("#clear-filters");
-const dialog=document.querySelector("#detail-dialog");
-const categoryNames={all:"All schemes",health:"Health",farmers:"For farmers",women:"Women & families",housing:"Housing",business:"Business"};
-let activeCategory="all";
-let activeFinderCategories=null;
-let showingSaved=false;
-let saved=new Set(JSON.parse(localStorage.getItem("schemesaathi-saved")||"[]"));
+  const schemes = window.SCHEMESAATHI_SCHEMES || [];
+  const categoryNames = {
+    all:"All topics",
+    health:"Health",
+    farmers:"For farmers",
+    women:"Women & family",
+    housing:"Home & energy",
+    business:"Work & business"
+  };
+  const state = {
+    category:"all",
+    topics:null,
+    view:"all",
+    query:"",
+    sort:"featured",
+    saved:loadSaved()
+  };
+  const $ = (selector, root=document) => root.querySelector(selector);
+  const $$ = (selector, root=document) => [...root.querySelectorAll(selector)];
+  const grid=$("#scheme-grid");
+  const search=$("#search");
+  const dialog=$("#detail-dialog");
+  const privacyDialog=$("#privacy-dialog");
+  let toastTimer;
 
-function render(){
-  const term=search.value.trim().toLowerCase();
-  const sort=document.querySelector("#sort").value;
-  let shown=schemes.filter(s=>(!showingSaved||saved.has(s.id))&&(activeCategory==="all"||s.category===activeCategory)&&(!activeFinderCategories||activeFinderCategories.includes(s.category))&&(!term||[s.name,s.summary,s.categoryLabel,s.benefit].join(" ").toLowerCase().includes(term)));
-  if(sort==="az") shown.sort((a,b)=>a.name.localeCompare(b.name)); else shown.sort((a,b)=>a.popular-b.popular);
-  document.querySelector("#all-count").textContent=schemes.length;
-  document.querySelector("#results-label").textContent=showingSaved?"Your saved schemes":(activeFinderCategories&&!term?"Your shortlist · "+activeFinderCategories.map(c=>categoryNames[c]).join(", "):term?shown.length+" results for “"+search.value.trim()+"”":activeCategory==="all"?"Popular schemes":categoryNames[activeCategory]);
-  empty.querySelector("h3").textContent=showingSaved?"No saved schemes yet":"No schemes found";
-  empty.querySelector("p").textContent=showingSaved?"Save a scheme and it will appear here.":"Try another search or clear your filters.";
-  clearButton.hidden=!(term||activeCategory!=="all"||activeFinderCategories||showingSaved);
-  empty.hidden=shown.length>0;
-  grid.hidden=shown.length===0;
-  grid.innerHTML=shown.map(s=>'<article class="scheme-card"><div class="card-top"><span class="scheme-icon" aria-hidden="true">'+s.icon+'</span><span class="category-label">'+s.categoryLabel+'</span><button class="save-button '+(saved.has(s.id)?"saved":"")+'" data-save="'+s.id+'" aria-label="'+(saved.has(s.id)?"Remove saved scheme":"Save scheme")+'" aria-pressed="'+saved.has(s.id)+'">'+(saved.has(s.id)?"♥":"♡")+'</button></div><h3>'+s.name+'</h3><p>'+s.summary+'</p><div class="card-bottom"><span class="benefit">'+s.benefit+'</span><button class="learn-button" data-detail="'+s.id+'">Details <span>↗</span></button></div></article>').join("");
-  document.querySelector("#saved-count").textContent=saved.size;
-}
-function clearFilters(){activeCategory="all";activeFinderCategories=null;showingSaved=false;search.value="";document.querySelectorAll(".topic-option input").forEach(input=>input.checked=false);document.querySelector("#finder-status").hidden=true;document.querySelectorAll(".filter-chip").forEach(b=>b.classList.toggle("active",b.dataset.category==="all"));render()}
-function openDetails(id){
-  const s=schemes.find(item=>item.id===id);if(!s)return;
-  document.querySelector("#dialog-content").innerHTML='<span class="dialog-category">'+s.categoryLabel+'</span><h2 id="dialog-title">'+s.name+'</h2><p class="dialog-summary">'+s.summary+'</p><div class="dialog-section"><h3>Who may be eligible</h3><p>'+s.who+'</p></div><div class="dialog-section"><h3>What to know</h3><p>'+s.details+'</p></div><div class="dialog-actions"><a class="button button-dark" href="'+s.url+'" target="_blank" rel="noopener noreferrer">Visit official website <span aria-hidden="true">↗</span></a><button class="learn-button" data-save="'+s.id+'">'+(saved.has(s.id)?"♥ Saved":"♡ Save scheme")+'</button></div><p class="disclaimer">This is a general summary, not an eligibility decision. Confirm current rules with the official scheme source.</p>';
-  dialog.showModal();
-}
-document.querySelector(".filters").addEventListener("click",e=>{const b=e.target.closest("[data-category]");if(!b)return;activeCategory=b.dataset.category;activeFinderCategories=null;showingSaved=false;document.querySelectorAll(".topic-option input").forEach(input=>input.checked=false);document.querySelector("#finder-status").hidden=true;document.querySelectorAll(".filter-chip").forEach(x=>x.classList.toggle("active",x===b));render()});
-grid.addEventListener("click",e=>{const save=e.target.closest("[data-save]");if(save){toggleSaved(save.dataset.save);return}const details=e.target.closest("[data-detail]");if(details)openDetails(details.dataset.detail)});
-document.querySelector("#dialog-content").addEventListener("click",e=>{const save=e.target.closest("[data-save]");if(save)toggleSaved(save.dataset.save)});
-function toggleSaved(id){if(saved.has(id))saved.delete(id);else saved.add(id);localStorage.setItem("schemesaathi-saved",JSON.stringify([...saved]));render();if(dialog.open){const s=schemes.find(item=>item.id===id);openDetails(id)}}
-search.addEventListener("input",render);
-document.querySelector("#sort").addEventListener("change",render);
-clearButton.addEventListener("click",clearFilters);
-document.querySelector("#empty-clear").addEventListener("click",clearFilters);
-document.querySelector("#dialog-close").addEventListener("click",()=>dialog.close());
-dialog.addEventListener("click",e=>{if(e.target===dialog)dialog.close()});
-document.querySelector("#saved-shortcut").addEventListener("click",()=>{showingSaved=true;activeCategory="all";activeFinderCategories=null;search.value="";document.querySelectorAll(".topic-option input").forEach(input=>input.checked=false);document.querySelector("#finder-status").hidden=true;document.querySelectorAll(".filter-chip").forEach(b=>b.classList.toggle("active",b.dataset.category==="all"));render()});
-document.querySelector("#finder-form").addEventListener("submit",e=>{e.preventDefault();const selected=[...document.querySelectorAll('input[name="support"]:checked')].map(input=>input.value);const status=document.querySelector("#finder-status");if(!selected.length){status.textContent="Choose at least one topic to build your shortlist.";status.hidden=false;return}activeCategory="all";activeFinderCategories=selected;showingSaved=false;search.value="";document.querySelectorAll(".filter-chip").forEach(b=>b.classList.toggle("active",b.dataset.category==="all"));status.textContent="Your shortlist is ready below. These topics are a starting point, not an eligibility check.";status.hidden=false;render();document.querySelector("#schemes").scrollIntoView({behavior:"smooth",block:"start"})});
-document.addEventListener("keydown",e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"){e.preventDefault();search.focus()}});
-render();
+  function loadSaved() {
+    try {
+      const items=JSON.parse(localStorage.getItem("schemesaathi-saved") || "[]");
+      return new Set(Array.isArray(items) ? items.filter(item=>typeof item==="string") : []);
+    } catch {
+      return new Set();
+    }
+  }
+
+  function saveState() {
+    try { localStorage.setItem("schemesaathi-saved", JSON.stringify([...state.saved])); }
+    catch { showToast("Your browser could not save this change."); }
+  }
+
+  function element(tag, className, text) {
+    const node=document.createElement(tag);
+    if(className) node.className=className;
+    if(text!==undefined) node.textContent=text;
+    return node;
+  }
+
+  function makeButton(text, action, id, className) {
+    const button=element("button",className,text);
+    button.type="button";
+    button.dataset.action=action;
+    if(id) button.dataset.id=id;
+    return button;
+  }
+
+  function createCard(scheme) {
+    const card=element("article","scheme-card");
+    const top=element("div","card-top");
+    top.append(element("span","scheme-icon",scheme.icon));
+    top.lastChild.setAttribute("aria-hidden","true");
+    top.append(element("span","category-label",scheme.categoryLabel));
+    const save=makeButton(state.saved.has(scheme.id)?"♥":"♡","save",scheme.id,"save-button"+(state.saved.has(scheme.id)?" saved":""));
+    save.setAttribute("aria-label",state.saved.has(scheme.id)?"Remove "+scheme.name+" from saved schemes":"Save "+scheme.name);
+    save.setAttribute("aria-pressed",String(state.saved.has(scheme.id)));
+    top.append(save);
+    card.append(top);
+    card.append(element("h3","",scheme.name));
+    card.append(element("p","card-summary",scheme.summary));
+    const bottom=element("div","card-bottom");
+    bottom.append(element("span","benefit",scheme.audience));
+    bottom.append(makeButton("View details ↗","details",scheme.id,"learn-button"));
+    card.append(bottom);
+    return card;
+  }
+
+  function visibleSchemes() {
+    const query=state.query.toLocaleLowerCase().trim();
+    let result=schemes.filter(scheme=>{
+      if(state.view==="saved" && !state.saved.has(scheme.id)) return false;
+      if(state.category!=="all" && scheme.category!==state.category) return false;
+      if(state.topics && !state.topics.includes(scheme.category)) return false;
+      if(query && ![scheme.name,scheme.summary,scheme.categoryLabel,scheme.audience,scheme.overview].join(" ").toLocaleLowerCase().includes(query)) return false;
+      return true;
+    });
+    if(state.sort==="az") result.sort((a,b)=>a.name.localeCompare(b.name));
+    else result.sort((a,b)=>a.featured-b.featured);
+    return result;
+  }
+
+  function render() {
+    const result=visibleSchemes();
+    const count=result.length;
+    grid.replaceChildren(...result.map(createCard));
+    $("#saved-count").textContent=state.saved.size;
+    $("#all-count")?.replaceChildren();
+    $$("[data-category-count]").forEach(node=>{
+      const category=node.dataset.categoryCount;
+      node.textContent=category==="all"?String(schemes.length):String(schemes.filter(s=>s.category===category).length);
+    });
+    $("#scheme-count") && ($("#scheme-count").textContent=String(schemes.length));
+    const searchIsActive=Boolean(state.query);
+    let label=state.view==="saved"?"Your saved schemes":
+      state.topics&&!searchIsActive?"Your shortlist · "+state.topics.map(topic=>categoryNames[topic]).join(", "):
+      searchIsActive?count+" result"+(count===1?"":"s")+" for “"+search.value.trim()+"”":
+      state.category==="all"?"Popular starting points":categoryNames[state.category];
+    $("#results-label").textContent=label;
+    $("#clear-filters").hidden=!(state.view==="saved"||state.category!=="all"||state.topics||searchIsActive);
+    $("#search-clear").hidden=!search.value;
+    $("#empty-state").hidden=count>0;
+    $("#scheme-grid").hidden=count===0;
+    $("#empty-title").textContent=state.view==="saved"?"No saved schemes yet":"No schemes found";
+    $("#empty-copy").textContent=state.view==="saved"?"Save a scheme from the directory and it will appear here.":"Try another search or clear your filters.";
+    $("#empty-clear").textContent=state.view==="saved"?"Browse schemes":"Show all schemes";
+    $$(".filter-chip").forEach(button=>button.classList.toggle("active",state.view!=="saved"&&!state.topics&&button.dataset.category===state.category));
+    $("#saved-shortcut").setAttribute("aria-current",state.view==="saved"?"page":"false");
+  }
+
+  function resetFinder() {
+    state.topics=null;
+    $$('input[name="support"]').forEach(input=>input.checked=false);
+    $("#finder-status").hidden=true;
+  }
+
+  function clearFilters() {
+    state.category="all";
+    state.topics=null;
+    state.view="all";
+    state.query="";
+    search.value="";
+    resetFinder();
+    render();
+  }
+
+  function showToast(message) {
+    const toast=$("#toast");
+    toast.textContent=message;
+    toast.hidden=false;
+    window.clearTimeout(toastTimer);
+    toastTimer=window.setTimeout(()=>{toast.hidden=true;},2600);
+  }
+
+  function openScheme(id, updateHash=true) {
+    const scheme=schemes.find(item=>item.id===id);
+    if(!scheme) return;
+    const content=$("#dialog-content");
+    content.replaceChildren();
+    content.append(element("span","dialog-category",scheme.categoryLabel));
+    const title=element("h2","",scheme.name);
+    title.id="dialog-title";
+    content.append(title);
+    content.append(element("p","dialog-summary",scheme.summary));
+    const audience=element("section","dialog-section");
+    audience.append(element("h3","","Who may find this relevant"));
+    audience.append(element("p","",scheme.audience));
+    content.append(audience);
+    const overview=element("section","dialog-section");
+    overview.append(element("h3","","The basics"));
+    overview.append(element("p","",scheme.overview));
+    content.append(overview);
+    const next=element("section","dialog-section");
+    next.append(element("h3","","A useful next step"));
+    next.append(element("p","",scheme.nextStep));
+    content.append(next);
+    const actions=element("div","dialog-actions");
+    const official=element("a","button button-dark","Open official source ↗");
+    official.href=scheme.officialUrl;
+    official.target="_blank";
+    official.rel="noopener noreferrer";
+    official.setAttribute("aria-label","Open the official "+scheme.officialLabel+" website in a new tab");
+    actions.append(official);
+    const save=makeButton(state.saved.has(id)?"♥ Saved":"♡ Save scheme","dialog-save",id,"learn-button dialog-save-button");
+    actions.append(save);
+    content.append(actions);
+    content.append(element("p","disclaimer","SchemeSaathi is an independent guide. This summary is not an eligibility decision. Check the latest rules and application dates with the official source."));
+    if(!dialog.open) dialog.showModal();
+    if(updateHash) history.replaceState(null,"","#scheme/"+encodeURIComponent(id));
+  }
+
+  function closeScheme() {
+    if(dialog.open) dialog.close();
+    if(location.hash.startsWith("#scheme/")) history.replaceState(null,"",state.view==="saved"?"#saved":"#schemes");
+  }
+
+  function setView(view, scroll=true) {
+    state.view=view;
+    if(view==="all") {
+      state.category="all";
+      state.topics=null;
+      state.query="";
+      search.value="";
+      resetFinder();
+    } else {
+      state.category="all";
+      state.topics=null;
+      state.query="";
+      search.value="";
+      resetFinder();
+    }
+    render();
+    if(scroll) $("#schemes").scrollIntoView({behavior:"smooth",block:"start"});
+  }
+
+  function handleRoute() {
+    const hash=decodeURIComponent(location.hash || "");
+    if(hash==="#saved") {
+      setView("saved",false);
+      return;
+    }
+    if(hash.startsWith("#scheme/")) {
+      openScheme(hash.slice(8),false);
+      return;
+    }
+    if(hash==="#schemes" && state.view==="saved") setView("all",false);
+  }
+
+  $("#filters").addEventListener("click",event=>{
+    const button=event.target.closest("[data-category]");
+    if(!button) return;
+    state.view="all";
+    state.category=button.dataset.category;
+    state.query="";
+    search.value="";
+    resetFinder();
+    render();
+  });
+
+  $("#scheme-grid").addEventListener("click",event=>{
+    const button=event.target.closest("[data-action]");
+    if(!button) return;
+    if(button.dataset.action==="details") openScheme(button.dataset.id);
+    if(button.dataset.action==="save") toggleSaved(button.dataset.id);
+  });
+
+  function toggleSaved(id) {
+    if(state.saved.has(id)) state.saved.delete(id); else state.saved.add(id);
+    saveState();
+    render();
+    if(dialog.open) openScheme(id,false);
+  }
+
+  $("#dialog-content").addEventListener("click",event=>{
+    const button=event.target.closest('[data-action="dialog-save"]');
+    if(button) toggleSaved(button.dataset.id);
+  });
+
+  $("#finder-form").addEventListener("submit",event=>{
+    event.preventDefault();
+    const selected=$$('input[name="support"]:checked').map(input=>input.value);
+    const status=$("#finder-status");
+    if(!selected.length) {
+      status.textContent="Choose at least one topic to build your shortlist.";
+      status.hidden=false;
+      return;
+    }
+    state.view="all";
+    state.category="all";
+    state.topics=selected;
+    state.query="";
+    search.value="";
+    render();
+    status.textContent="Your shortlist is ready below. These are potential starting points, not an eligibility check.";
+    status.hidden=false;
+    $("#schemes").scrollIntoView({behavior:"smooth",block:"start"});
+  });
+
+  $("#search").addEventListener("input",()=>{
+    state.query=search.value;
+    state.view="all";
+    render();
+  });
+  $("#search-clear").addEventListener("click",()=>{
+    search.value="";
+    state.query="";
+    search.focus();
+    render();
+  });
+  $("#sort").addEventListener("change",event=>{
+    state.sort=event.target.value;
+    render();
+  });
+  $("#clear-filters").addEventListener("click",clearFilters);
+  $("#empty-clear").addEventListener("click",()=>{
+    if(state.view==="saved") location.hash="#schemes";
+    else clearFilters();
+  });
+  $("#saved-shortcut").addEventListener("click",event=>{
+    event.preventDefault();
+    state.view="saved";
+    state.category="all";
+    state.topics=null;
+    state.query="";
+    search.value="";
+    resetFinder();
+    render();
+    if(location.hash!=="#saved") history.pushState(null,"","#saved");
+    $("#schemes").scrollIntoView({behavior:"smooth",block:"start"});
+  });
+  $("#dialog-close").addEventListener("click",closeScheme);
+  dialog.addEventListener("click",event=>{if(event.target===dialog) closeScheme();});
+  dialog.addEventListener("close",()=>{
+    if(location.hash.startsWith("#scheme/")) history.replaceState(null,"",state.view==="saved"?"#saved":"#schemes");
+  });
+
+  $("#privacy-open").addEventListener("click",()=>privacyDialog.showModal());
+  $("#privacy-close").addEventListener("click",()=>privacyDialog.close());
+  privacyDialog.addEventListener("click",event=>{if(event.target===privacyDialog) privacyDialog.close();});
+  $("#clear-saved").addEventListener("click",()=>{
+    state.saved.clear();
+    saveState();
+    render();
+    privacyDialog.close();
+    showToast("Saved schemes cleared from this browser.");
+  });
+
+  $("#menu-toggle").addEventListener("click",event=>{
+    const button=event.currentTarget;
+    const expanded=button.getAttribute("aria-expanded")==="true";
+    button.setAttribute("aria-expanded",String(!expanded));
+    button.setAttribute("aria-label",expanded?"Open navigation":"Close navigation");
+    $("#site-nav").classList.toggle("open",!expanded);
+  });
+  $("#site-nav").addEventListener("click",event=>{
+    if(event.target.closest("a")) {
+      $("#menu-toggle").setAttribute("aria-expanded","false");
+      $("#menu-toggle").setAttribute("aria-label","Open navigation");
+      $("#site-nav").classList.remove("open");
+    }
+  });
+
+  document.addEventListener("keydown",event=>{
+    if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="k") {
+      event.preventDefault();
+      search.focus();
+      $("#schemes").scrollIntoView({behavior:"smooth",block:"start"});
+    }
+    if(event.key==="Escape" && dialog.open) closeScheme();
+  });
+
+  window.addEventListener("hashchange",handleRoute);
+  render();
+  handleRoute();
+})();
