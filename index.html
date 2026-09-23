@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f6f1">
+  <meta name="description" content="Find Indian government schemes that may fit your next step. Explore benefits, eligibility, and official application links with SchemeSaathi.">
+  <title>SchemeSaathi — Find support for your next step</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#" aria-label="SchemeSaathi home"><span class="brand-mark">S<span>+</span></span><span>scheme<span class="brand-light">saathi</span></span></a>
+    <nav aria-label="Main navigation"><a href="#schemes">Explore schemes</a><a href="#how-it-works">How it works</a></nav>
+    <a class="saved-link" href="#schemes" id="saved-shortcut"><span aria-hidden="true">♡</span> Saved <span class="saved-count" id="saved-count">0</span></a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="eyebrow-dot"></span> YOUR GUIDE TO PUBLIC BENEFITS</div>
+        <h1>A little support<br>can go a <em>long way.</em></h1>
+        <p>Discover government schemes that could help you, your family, or your next big idea move forward.</p>
+        <a class="button button-dark" href="#schemes">Find your scheme <span aria-hidden="true">↗</span></a>
+        <div class="hero-note"><span class="note-check">✓</span> Clear information. Official application links.</div>
+      </div>
+      <div class="hero-art" aria-label="Illustration of a person planting a growing seedling">
+        <div class="art-orbit orbit-one"></div><div class="art-orbit orbit-two"></div>
+        <div class="sun"></div><div class="plant-pot"><div class="pot-top"></div><div class="pot-body"></div></div>
+        <div class="stem"></div><div class="leaf leaf-left"></div><div class="leaf leaf-right"></div>
+        <span class="art-spark spark-a">✳</span><span class="art-spark spark-b">✦</span>
+        <div class="art-label"><span>Small steps,</span><strong>brighter futures.</strong></div>
+      </div>
+      <div class="hero-bottom"><span>BUILT FOR EVERYDAY INDIA</span><span>01 / 04 <i></i> Discover</span></div>
+    </section>
+
+    <section class="explore section-wrap" id="schemes">
+      <div class="section-heading">
+        <div><div class="eyebrow">A GOOD PLACE TO START</div><h2>What are you looking for?</h2></div>
+        <p>Browse popular schemes, or search for something specific.</p>
+      </div>
+      <div class="search-row">
+        <label class="search-box"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Try “health”, “farmer”, or “women”" autocomplete="off"><kbd>⌘ K</kbd></label>
+        <label class="sort-box"><span class="sr-only">Sort schemes</span><select id="sort"><option value="popular">Popular first</option><option value="az">Name A–Z</option></select><span aria-hidden="true">⌄</span></label>
+      </div>
+      <div class="filters" role="group" aria-label="Filter schemes by category">
+        <button class="filter-chip active" data-category="all">All schemes <span id="all-count"></span></button>
+        <button class="filter-chip" data-category="health">Health</button>
+        <button class="filter-chip" data-category="farmers">For farmers</button>
+        <button class="filter-chip" data-category="women">Women &amp; families</button>
+        <button class="filter-chip" data-category="housing">Housing</button>
+        <button class="filter-chip" data-category="business">Business</button>
+      </div>
+      <div class="results-meta"><span id="results-label">Popular schemes</span><button class="text-button" id="clear-filters" hidden>Clear filters <span>×</span></button></div>
+      <div class="scheme-grid" id="scheme-grid" aria-live="polite"></div>
+      <div class="empty-state" id="empty-state" hidden><span>⌕</span><h3>No schemes found</h3><p>Try another search or clear your filters.</p><button class="button button-outline" id="empty-clear">Clear filters</button></div>
+      <p class="disclaimer">SchemeSaathi is an independent guide. Details can change; always confirm eligibility and current rules on the official scheme website before applying.</p>
+    </section>
+
+    <section class="how section-wrap" id="how-it-works">
+      <div class="how-intro"><div class="eyebrow">MADE TO FEEL SIMPLE</div><h2>From “I wonder”<br>to “I can apply.”</h2><p>Government support can be hard to find. We help you get to the useful bits, faster.</p></div>
+      <div class="how-steps">
+        <article><span class="step-number">01</span><div class="step-icon">⌕</div><h3>Explore</h3><p>Browse by the kind of support you need.</p></article>
+        <article><span class="step-number">02</span><div class="step-icon">↗</div><h3>Understand</h3><p>Get a clear overview of benefits and eligibility.</p></article>
+        <article><span class="step-number">03</span><div class="step-icon">✓</div><h3>Take the next step</h3><p>Continue to an official source to learn more or apply.</p></article>
+      </div>
+    </section>
+
+    <section class="closing">
+      <div><div class="eyebrow">YOUR NEXT STEP STARTS HERE</div><h2>Good things are<br>within reach.</h2><a class="button button-light" href="#schemes">Explore schemes <span aria-hidden="true">↗</span></a></div>
+      <div class="closing-mark">S<span>+</span></div>
+    </section>
+  </main>
+
+  <footer><a class="brand" href="#"><span class="brand-mark">S<span>+</span></span><span>scheme<span class="brand-light">saathi</span></span></a><span>Made to make support easier to find.</span><span>© 2026 SchemeSaathi</span></footer>
+  <dialog class="detail-dialog" id="detail-dialog" aria-labelledby="dialog-title"><button class="dialog-close" id="dialog-close" aria-label="Close details">×</button><div id="dialog-content"></div></dialog>
+</body>
+</html>
