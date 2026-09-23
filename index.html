@@ -10,10 +10,47 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <script src="scheme-data.js" defer></script>
-  <script src="app.js" defer></script>
 </head>
 <body>
+  <section class="auth-screen" id="auth-screen" aria-labelledby="auth-title">
+    <div class="auth-story">
+      <a class="auth-brand" href="#" aria-label="SchemeSaathi"><span class="brand-mark">S<span>+</span></span><span>scheme<span class="brand-light">saathi</span></span></a>
+      <div class="auth-story-copy">
+        <span class="auth-kicker"><span></span> A CLEARER WAY TO FIND SUPPORT</span>
+        <h1>Start with what<br>could <em>help.</em></h1>
+        <p>Explore public schemes and scholarships with plain-language guides, useful starting points, and links to official sources.</p>
+        <div class="auth-art" aria-hidden="true"><div class="auth-art-ring ring-large"></div><div class="auth-art-ring ring-small"></div><div class="auth-art-sun"></div><div class="auth-art-stem"></div><div class="auth-art-leaf leaf-a"></div><div class="auth-art-leaf leaf-b"></div><div class="auth-art-pot"></div><span class="auth-art-spark">✳</span><div class="auth-art-note"><span>One step at a time</span><strong>Your next step starts here.</strong></div></div>
+      </div>
+      <div class="auth-story-footer"><span>INDEPENDENT GUIDE · MADE FOR EVERYDAY INDIA</span><span>SchemeSaathi</span></div>
+    </div>
+    <div class="auth-side"><div class="auth-card-wrap">
+      <div class="auth-mobile-brand"><span class="brand-mark">S<span>+</span></span><span>scheme<span class="brand-light">saathi</span></span></div>
+      <div class="auth-card">
+        <div class="auth-heading"><div class="eyebrow">WELCOME TO SCHEMESAATHI</div><h2 id="auth-title">Find your starting point.</h2><p>Sign in to explore schemes, scholarships, and save the ones you want to revisit.</p></div>
+        <div class="auth-setup-message" id="auth-setup-message" role="status"><span class="setup-icon" aria-hidden="true">i</span><div><strong>Sign-in is not set up yet</strong><p>Add your Firebase web app configuration and enable the sign-in providers to open the site.</p></div></div>
+        <div id="auth-configured-ui" hidden>
+          <div id="auth-options">
+            <button class="google-button" id="google-sign-in" type="button"><span class="google-g" aria-hidden="true">G</span><span>Continue with Google</span></button>
+            <div class="auth-divider"><span>or continue with</span></div>
+            <div class="auth-tabs" role="tablist" aria-label="Sign-in method"><button class="auth-tab active" id="email-tab" type="button" role="tab" aria-selected="true" aria-controls="email-panel" data-auth-tab="email">Email</button><button class="auth-tab" id="phone-tab" type="button" role="tab" aria-selected="false" aria-controls="phone-panel" data-auth-tab="phone">Phone + OTP</button></div>
+            <section class="auth-method-panel" id="email-panel" role="tabpanel" aria-labelledby="email-tab">
+              <form id="email-form"><label class="auth-label" for="email-address">Email address</label><input class="auth-input" id="email-address" name="email" type="email" autocomplete="email" placeholder="you@example.com" required><label class="auth-label" for="email-password">Password</label><input class="auth-input" id="email-password" name="password" type="password" autocomplete="current-password" minlength="6" placeholder="At least 6 characters" required><button class="button button-dark auth-submit" id="email-submit" type="submit">Sign in <span aria-hidden="true">↗</span></button></form>
+              <div class="auth-form-links"><button class="text-button" id="forgot-password" type="button">Forgot password?</button><span><span id="email-mode-prompt">New here?</span> <button class="text-button" id="email-mode-toggle" type="button">Create an account</button></span></div>
+            </section>
+            <section class="auth-method-panel" id="phone-panel" role="tabpanel" aria-labelledby="phone-tab" hidden>
+              <form id="phone-form"><label class="auth-label" for="phone-number">Mobile number with country code</label><input class="auth-input" id="phone-number" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+91 98765 43210" pattern="\+[1-9][0-9]{7,14}" required><span class="auth-field-hint">Use international format, for example +91 followed by your number.</span><div class="recaptcha-slot" id="recaptcha-container"></div><button class="button button-dark auth-submit" id="send-phone-code" type="submit">Send OTP <span aria-hidden="true">↗</span></button></form>
+              <form class="otp-form" id="otp-form" hidden><label class="auth-label" for="otp-code">6-digit verification code</label><input class="auth-input otp-input" id="otp-code" name="otp" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="••••••" required><button class="button button-dark auth-submit" type="submit">Verify and continue <span aria-hidden="true">↗</span></button><button class="text-button change-number" id="change-number" type="button">Use a different number</button></form>
+              <p class="phone-disclosure">Firebase processes your number to send the code and prevent abuse. Your carrier may charge for SMS.</p>
+            </section>
+          </div>
+          <section class="verification-panel" id="verification-panel" hidden><span class="verification-icon" aria-hidden="true">✉</span><h3>Check your inbox</h3><p>We sent a verification link to <strong id="verification-address"></strong>. Verify your email before continuing.</p><div class="verification-actions"><button class="button button-dark" id="check-verification" type="button">I’ve verified my email</button><button class="button button-outline" id="resend-verification" type="button">Resend link</button></div><button class="text-button auth-sign-out" id="verification-sign-out" type="button">Back to sign in</button></section>
+          <p class="auth-status" id="auth-status" role="status" aria-live="polite"></p><p class="auth-terms">By continuing, you agree to use SchemeSaathi as an independent information guide. Confirm current rules with the official scheme source.</p>
+        </div>
+      </div>
+      <p class="auth-footer-note">Your sign-in is handled by Firebase Authentication.</p>
+    </div></div>
+  </section>
+  <div id="protected-site" hidden>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
     <a class="brand" href="#home" aria-label="SchemeSaathi home"><span class="brand-mark">S<span>+</span></span><span>scheme<span class="brand-light">saathi</span></span></a>
@@ -21,7 +58,7 @@
     <nav class="site-nav" id="site-nav" aria-label="Main navigation">
       <a href="#finder">Find by need</a><a href="#schemes">Explore schemes</a><a href="#how-it-works">How it works</a><a href="#about">About</a>
     </nav>
-    <a class="saved-link" href="#saved" id="saved-shortcut"><span aria-hidden="true">♡</span><span>Saved</span><span class="saved-count" id="saved-count">0</span></a>
+    <div class="account-actions"><span class="account-label" id="account-label"></span><button class="sign-out-button" id="sign-out" type="button">Sign out</button><a class="saved-link" href="#saved" id="saved-shortcut"><span aria-hidden="true">♡</span><span>Saved</span><span class="saved-count" id="saved-count">0</span></a></div>
   </header>
 
   <main id="main">
@@ -31,7 +68,7 @@
         <h1 id="hero-title">A little support<br>can go a <em>long way.</em></h1>
         <p>Discover government schemes that could help you, your family, or your next big idea move forward.</p>
         <div class="hero-actions"><a class="button button-dark" href="#finder">Find your starting point <span aria-hidden="true">↗</span></a><a class="quiet-link" href="#schemes">Browse all schemes <span aria-hidden="true">↓</span></a></div>
-        <div class="hero-note"><span class="note-check" aria-hidden="true">✓</span> Clear summaries. Official sources. No sign-up.</div>
+        <div class="hero-note"><span class="note-check" aria-hidden="true">✓</span> Clear summaries. Official sources. Saved schemes stay with your account.</div>
       </div>
       <div class="hero-art" aria-hidden="true">
         <div class="art-orbit orbit-one"></div><div class="art-orbit orbit-two"></div>
@@ -131,11 +168,13 @@
   <dialog class="detail-dialog privacy-dialog" id="privacy-dialog" aria-labelledby="privacy-title">
     <button class="dialog-close" id="privacy-close" type="button" aria-label="Close privacy details">×</button>
     <span class="dialog-category">YOUR CHOICES</span><h2 id="privacy-title">Privacy on SchemeSaathi</h2>
-    <p class="dialog-summary">This static website does not ask for your name, phone number, Aadhaar number, income, or account details.</p>
-    <div class="dialog-section"><h3>What is stored here</h3><p>Your saved scheme IDs are stored in this browser's local storage so they remain available on this device. Finder choices are used only to filter the current page and are not saved.</p></div>
+    <p class="dialog-summary">Sign-in uses Firebase Authentication for your email address or phone number. SchemeSaathi does not ask for Aadhaar, income, or government account details.</p>
+    <div class="dialog-section"><h3>What is stored here</h3><p>Your saved scheme IDs are stored in this browser under your signed-in account. Finder choices are used only to filter the current page and are not saved.</p></div>
     <div class="dialog-section"><h3>Official websites</h3><p>When you follow a scheme link, you leave SchemeSaathi. The destination's privacy policy and application process apply there.</p></div>
     <div class="dialog-actions"><button class="button button-outline" id="clear-saved" type="button">Clear saved schemes</button></div>
   </dialog>
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  </div>
+  <script type="module" src="app.js"></script>
 </body>
 </html>
