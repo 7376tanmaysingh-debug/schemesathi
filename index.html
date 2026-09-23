@@ -15,7 +15,7 @@
 <body>
   <header class="site-header">
     <a class="brand" href="#" aria-label="SchemeSaathi home"><span class="brand-mark">S<span>+</span></span><span>scheme<span class="brand-light">saathi</span></span></a>
-    <nav aria-label="Main navigation"><a href="#schemes">Explore schemes</a><a href="#how-it-works">How it works</a></nav>
+    <nav aria-label="Main navigation"><a href="#finder">Find by need</a><a href="#schemes">Explore schemes</a><a href="#how-it-works">How it works</a></nav>
     <a class="saved-link" href="#schemes" id="saved-shortcut"><span aria-hidden="true">♡</span> Saved <span class="saved-count" id="saved-count">0</span></a>
   </header>
 
@@ -25,7 +25,7 @@
         <div class="eyebrow"><span class="eyebrow-dot"></span> YOUR GUIDE TO PUBLIC BENEFITS</div>
         <h1>A little support<br>can go a <em>long way.</em></h1>
         <p>Discover government schemes that could help you, your family, or your next big idea move forward.</p>
-        <a class="button button-dark" href="#schemes">Find your scheme <span aria-hidden="true">↗</span></a>
+        <a class="button button-dark" href="#finder">Find your scheme <span aria-hidden="true">↗</span></a>
         <div class="hero-note"><span class="note-check">✓</span> Clear information. Official application links.</div>
       </div>
       <div class="hero-art" aria-label="Illustration of a person planting a growing seedling">
@@ -36,6 +36,25 @@
         <div class="art-label"><span>Small steps,</span><strong>brighter futures.</strong></div>
       </div>
       <div class="hero-bottom"><span>BUILT FOR EVERYDAY INDIA</span><span>01 / 04 <i></i> Discover</span></div>
+    </section>
+
+    <section class="finder-section section-wrap" id="finder" aria-labelledby="finder-title">
+      <div class="finder-heading">
+        <div><div class="eyebrow">A QUICK PLACE TO BEGIN</div><h2 id="finder-title">What would you like help with?</h2></div>
+        <p>Choose one or more topics. We’ll make a simple shortlist to explore.</p>
+      </div>
+      <form id="finder-form">
+        <fieldset class="topic-grid">
+          <legend class="sr-only">Choose the kinds of support you are looking for</legend>
+          <label class="topic-option"><input type="checkbox" name="support" value="health"><span class="topic-icon">✚</span><span><strong>Health &amp; care</strong><small>Medical and hospital support</small></span><span class="topic-check">✓</span></label>
+          <label class="topic-option"><input type="checkbox" name="support" value="farmers"><span class="topic-icon">⌁</span><span><strong>Farming</strong><small>Farming, crops, and pensions</small></span><span class="topic-check">✓</span></label>
+          <label class="topic-option"><input type="checkbox" name="support" value="housing"><span class="topic-icon">⌂</span><span><strong>Home &amp; energy</strong><small>Housing and rooftop solar</small></span><span class="topic-check">✓</span></label>
+          <label class="topic-option"><input type="checkbox" name="support" value="women"><span class="topic-icon">✿</span><span><strong>Women &amp; family</strong><small>Family savings and clean cooking</small></span><span class="topic-check">✓</span></label>
+          <label class="topic-option"><input type="checkbox" name="support" value="business"><span class="topic-icon">↗</span><span><strong>Work &amp; business</strong><small>Skills, credit, and enterprise</small></span><span class="topic-check">✓</span></label>
+        </fieldset>
+        <div class="finder-actions"><button class="button button-dark" type="submit">Show my shortlist <span aria-hidden="true">↘</span></button><span class="finder-privacy">No personal details needed. Your selections stay in this browser.</span></div>
+      </form>
+      <p class="finder-status" id="finder-status" role="status" hidden></p>
     </section>
 
     <section class="explore section-wrap" id="schemes">

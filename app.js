@@ -20,28 +20,32 @@ const clearButton=document.querySelector("#clear-filters");
 const dialog=document.querySelector("#detail-dialog");
 const categoryNames={all:"All schemes",health:"Health",farmers:"For farmers",women:"Women & families",housing:"Housing",business:"Business"};
 let activeCategory="all";
+let activeFinderCategories=null;
+let showingSaved=false;
 let saved=new Set(JSON.parse(localStorage.getItem("schemesaathi-saved")||"[]"));
 
 function render(){
   const term=search.value.trim().toLowerCase();
   const sort=document.querySelector("#sort").value;
-  let shown=schemes.filter(s=>(activeCategory==="all"||s.category===activeCategory)&&(!term||[s.name,s.summary,s.categoryLabel,s.benefit].join(" ").toLowerCase().includes(term)));
+  let shown=schemes.filter(s=>(!showingSaved||saved.has(s.id))&&(activeCategory==="all"||s.category===activeCategory)&&(!activeFinderCategories||activeFinderCategories.includes(s.category))&&(!term||[s.name,s.summary,s.categoryLabel,s.benefit].join(" ").toLowerCase().includes(term)));
   if(sort==="az") shown.sort((a,b)=>a.name.localeCompare(b.name)); else shown.sort((a,b)=>a.popular-b.popular);
   document.querySelector("#all-count").textContent=schemes.length;
-  document.querySelector("#results-label").textContent=term?shown.length+" results for “"+search.value.trim()+"”":activeCategory==="all"?"Popular schemes":categoryNames[activeCategory];
-  clearButton.hidden=!(term||activeCategory!=="all");
+  document.querySelector("#results-label").textContent=showingSaved?"Your saved schemes":(activeFinderCategories&&!term?"Your shortlist · "+activeFinderCategories.map(c=>categoryNames[c]).join(", "):term?shown.length+" results for “"+search.value.trim()+"”":activeCategory==="all"?"Popular schemes":categoryNames[activeCategory]);
+  empty.querySelector("h3").textContent=showingSaved?"No saved schemes yet":"No schemes found";
+  empty.querySelector("p").textContent=showingSaved?"Save a scheme and it will appear here.":"Try another search or clear your filters.";
+  clearButton.hidden=!(term||activeCategory!=="all"||activeFinderCategories||showingSaved);
   empty.hidden=shown.length>0;
   grid.hidden=shown.length===0;
   grid.innerHTML=shown.map(s=>'<article class="scheme-card"><div class="card-top"><span class="scheme-icon" aria-hidden="true">'+s.icon+'</span><span class="category-label">'+s.categoryLabel+'</span><button class="save-button '+(saved.has(s.id)?"saved":"")+'" data-save="'+s.id+'" aria-label="'+(saved.has(s.id)?"Remove saved scheme":"Save scheme")+'" aria-pressed="'+saved.has(s.id)+'">'+(saved.has(s.id)?"♥":"♡")+'</button></div><h3>'+s.name+'</h3><p>'+s.summary+'</p><div class="card-bottom"><span class="benefit">'+s.benefit+'</span><button class="learn-button" data-detail="'+s.id+'">Details <span>↗</span></button></div></article>').join("");
   document.querySelector("#saved-count").textContent=saved.size;
 }
-function clearFilters(){activeCategory="all";search.value="";document.querySelectorAll(".filter-chip").forEach(b=>b.classList.toggle("active",b.dataset.category==="all"));render()}
+function clearFilters(){activeCategory="all";activeFinderCategories=null;showingSaved=false;search.value="";document.querySelectorAll(".topic-option input").forEach(input=>input.checked=false);document.querySelector("#finder-status").hidden=true;document.querySelectorAll(".filter-chip").forEach(b=>b.classList.toggle("active",b.dataset.category==="all"));render()}
 function openDetails(id){
   const s=schemes.find(item=>item.id===id);if(!s)return;
   document.querySelector("#dialog-content").innerHTML='<span class="dialog-category">'+s.categoryLabel+'</span><h2 id="dialog-title">'+s.name+'</h2><p class="dialog-summary">'+s.summary+'</p><div class="dialog-section"><h3>Who may be eligible</h3><p>'+s.who+'</p></div><div class="dialog-section"><h3>What to know</h3><p>'+s.details+'</p></div><div class="dialog-actions"><a class="button button-dark" href="'+s.url+'" target="_blank" rel="noopener noreferrer">Visit official website <span aria-hidden="true">↗</span></a><button class="learn-button" data-save="'+s.id+'">'+(saved.has(s.id)?"♥ Saved":"♡ Save scheme")+'</button></div><p class="disclaimer">This is a general summary, not an eligibility decision. Confirm current rules with the official scheme source.</p>';
   dialog.showModal();
 }
-document.querySelector(".filters").addEventListener("click",e=>{const b=e.target.closest("[data-category]");if(!b)return;activeCategory=b.dataset.category;document.querySelectorAll(".filter-chip").forEach(x=>x.classList.toggle("active",x===b));render()});
+document.querySelector(".filters").addEventListener("click",e=>{const b=e.target.closest("[data-category]");if(!b)return;activeCategory=b.dataset.category;activeFinderCategories=null;showingSaved=false;document.querySelectorAll(".topic-option input").forEach(input=>input.checked=false);document.querySelector("#finder-status").hidden=true;document.querySelectorAll(".filter-chip").forEach(x=>x.classList.toggle("active",x===b));render()});
 grid.addEventListener("click",e=>{const save=e.target.closest("[data-save]");if(save){toggleSaved(save.dataset.save);return}const details=e.target.closest("[data-detail]");if(details)openDetails(details.dataset.detail)});
 document.querySelector("#dialog-content").addEventListener("click",e=>{const save=e.target.closest("[data-save]");if(save)toggleSaved(save.dataset.save)});
 function toggleSaved(id){if(saved.has(id))saved.delete(id);else saved.add(id);localStorage.setItem("schemesaathi-saved",JSON.stringify([...saved]));render();if(dialog.open){const s=schemes.find(item=>item.id===id);openDetails(id)}}
@@ -51,6 +55,7 @@ clearButton.addEventListener("click",clearFilters);
 document.querySelector("#empty-clear").addEventListener("click",clearFilters);
 document.querySelector("#dialog-close").addEventListener("click",()=>dialog.close());
 dialog.addEventListener("click",e=>{if(e.target===dialog)dialog.close()});
-document.querySelector("#saved-shortcut").addEventListener("click",()=>{activeCategory="all";search.value="";document.querySelectorAll(".filter-chip").forEach(b=>b.classList.toggle("active",b.dataset.category==="all"));render();if(saved.size){grid.innerHTML=schemes.filter(s=>saved.has(s.id)).map(s=>'<article class="scheme-card"><div class="card-top"><span class="scheme-icon">'+s.icon+'</span><span class="category-label">'+s.categoryLabel+'</span><button class="save-button saved" data-save="'+s.id+'" aria-label="Remove saved scheme">♥</button></div><h3>'+s.name+'</h3><p>'+s.summary+'</p><div class="card-bottom"><span class="benefit">'+s.benefit+'</span><button class="learn-button" data-detail="'+s.id+'">Details <span>↗</span></button></div></article>').join("");document.querySelector("#results-label").textContent="Your saved schemes"}});
+document.querySelector("#saved-shortcut").addEventListener("click",()=>{showingSaved=true;activeCategory="all";activeFinderCategories=null;search.value="";document.querySelectorAll(".topic-option input").forEach(input=>input.checked=false);document.querySelector("#finder-status").hidden=true;document.querySelectorAll(".filter-chip").forEach(b=>b.classList.toggle("active",b.dataset.category==="all"));render()});
+document.querySelector("#finder-form").addEventListener("submit",e=>{e.preventDefault();const selected=[...document.querySelectorAll('input[name="support"]:checked')].map(input=>input.value);const status=document.querySelector("#finder-status");if(!selected.length){status.textContent="Choose at least one topic to build your shortlist.";status.hidden=false;return}activeCategory="all";activeFinderCategories=selected;showingSaved=false;search.value="";document.querySelectorAll(".filter-chip").forEach(b=>b.classList.toggle("active",b.dataset.category==="all"));status.textContent="Your shortlist is ready below. These topics are a starting point, not an eligibility check.";status.hidden=false;render();document.querySelector("#schemes").scrollIntoView({behavior:"smooth",block:"start"})});
 document.addEventListener("keydown",e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"){e.preventDefault();search.focus()}});
 render();
