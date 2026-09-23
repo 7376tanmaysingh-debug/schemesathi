@@ -12,7 +12,7 @@ Serve the folder through a local web server; ES modules and Firebase Auth do not
 2. Copy the Web app configuration into firebase-config.js. This client configuration is public and is not a private server credential.
 3. In Authentication > Sign-in method, enable Email/Password, Google, and Phone.
 4. In Authentication > Settings, add your local development host and deployed site host to Authorized domains. Phone authentication does not work on localhost; test OTP on an authorized deployed domain or connect the Firebase Auth Emulator.
-5. Review the Phone authentication region policy and SMS limits. Use Firebase test phone numbers during development.
+5. Review the Phone authentication region policy and SMS limits. Link a Cloud Billing account to enable real SMS sending, and use Firebase test phone numbers during development.
 6. Deploy over HTTPS, then try email verification, Google sign-in, and phone OTP.
 
 Until Firebase configuration is filled in, the sign-in screen remains visible and the site stays closed. Email/password accounts must verify their email before the site opens. Phone sign-in uses Firebase's reCAPTCHA verification.
