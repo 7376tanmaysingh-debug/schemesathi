@@ -369,9 +369,16 @@ import { firebaseConfig,isFirebaseConfigured } from "./firebase-config.js";
       "auth/invalid-verification-code":"That code is not correct. Check it and try again.",
       "auth/code-expired":"That code expired. Request a new one.",
       "auth/captcha-check-failed":"The security check did not complete. Try again.",
-      "auth/network-request-failed":"Check your internet connection and try again."
+      "auth/network-request-failed":"Check your internet connection and try again.",
+      "auth/billing-not-enabled":"Firebase Phone Authentication needs a Cloud Billing account linked to this project before it can send SMS.",
+      "auth/app-not-authorized":"Add this website's hostname under Firebase Authentication > Settings > Authorized domains.",
+      "auth/invalid-app-credential":"Firebase could not verify this website with reCAPTCHA. Check the authorized domain and retry.",
+      "auth/missing-app-credential":"The phone security check is missing. Reload the page and retry.",
+      "auth/quota-exceeded":"Firebase's SMS quota was reached. Check project billing and Authentication usage limits.",
+      "auth/region-not-allowed":"This destination is blocked by the Firebase SMS region policy. Allow India in Authentication settings.",
+      "auth/phone-number-not-whitelisted":"For testing, add this number under Firebase Authentication test phone numbers.
     };
-    return messages[error?.code] || "Sign-in could not be completed. Please try again.";
+    return messages[error?.code] || (error?.code ? "Firebase sign-in failed ("+error.code+"). Check Phone provider, SMS billing, allowed region, and authorized domain settings." : "Sign-in could not be completed. Please try again.");
   }
   function authBusy(value) { $$("#auth-configured-ui button").forEach(button=>button.disabled=value); }
   function showAuthOptions() { authOptions.hidden=false; verificationPanel.hidden=true; authMessage(""); }
