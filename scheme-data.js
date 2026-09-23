@@ -1,4 +1,4 @@
-window.SCHEMESAATHI_SCHEMES = [
+export default [
   {
     id:"ayushman-bharat",name:"Ayushman Bharat PM-JAY",category:"health",categoryLabel:"Health",icon:"✚",featured:1,
     summary:"Health cover for eligible families to access hospital care.",
