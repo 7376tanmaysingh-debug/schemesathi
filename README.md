@@ -1,37 +1,43 @@
 # SchemeSaathi
 
-A mobile-friendly, static website that helps people explore a curated set of Indian public-benefit schemes, build a topic-based shortlist, and continue to official sources.
+A mobile-friendly guide to Indian public-benefit schemes and scholarships. Visitors must sign in with Firebase Authentication before SchemeSaathi opens.
 
 ## Run locally
 
-No framework, build step, or dependency installation is required. Open \`index.html\` in a browser, or serve this folder with a static server such as:
+Serve the folder through a local web server; ES modules and Firebase Auth do not work when opened as a file URL. For example, use Python's built-in server on port 8000, then open http://localhost:8000.
 
-\`\`\`sh
-python -m http.server 8000
-\`\`\`
+## Configure authentication
 
-Then visit \`http://localhost:8000\`.
+1. Create a Firebase project and register a Web app in Firebase Console.
+2. Copy the Web app configuration into firebase-config.js. This client configuration is public and is not a private server credential.
+3. In Authentication > Sign-in method, enable Email/Password, Google, and Phone.
+4. In Authentication > Settings, add your local development host and deployed site host to Authorized domains.
+5. Review the Phone authentication region policy and SMS limits. Use Firebase test phone numbers during development.
+6. Deploy over HTTPS, then try email verification, Google sign-in, and phone OTP.
+
+Until Firebase configuration is filled in, the sign-in screen remains visible and the site stays closed. Email/password accounts must verify their email before the site opens. Phone sign-in uses Firebase's reCAPTCHA verification.
 
 ## Website features
 
-- Home page with clear paths into discovery
-- Topic finder for health, farming, housing and energy, women and family, business, and education
-- Scholarship listings for school and college students, with links to the live National Scholarship Portal
+- Guided topic finder for health, farming, housing and energy, women and family, business, education, and scholarships
 - Searchable scheme directory with topic filters and sorting
-- Scheme detail dialogs with plain-language summaries and official links
-- Saved schemes stored locally in the current browser
-- Responsive navigation, mobile layouts, keyboard search shortcut, FAQ, and privacy information
-- No account, API, or personal information required
+- Plain-language scheme summaries and links to official sources
+- Saved schemes stored locally and separated by signed-in account
+- Google sign-in, email/password with email verification, password reset, and phone OTP
+- Responsive navigation, mobile layouts, keyboard search shortcut, FAQs, and privacy information
 
-## Important
+## Security and privacy
 
-SchemeSaathi is an independent guide and is not a government service. The finder filters by selected topics; it does not determine eligibility. The directory is curated and incomplete. Programme terms, benefits, documents, and application windows may change, and some programmes vary by state. Confirm all details with the linked official source before applying.
+Firebase Authentication verifies the account before the page reveals the SchemeSaathi interface. The sign-in screen is a client-side access gate. GitHub Pages and other static hosting serve site files publicly, so a visitor can still download the JavaScript and scheme catalogue directly. Do not put confidential data or private documents in this repository. Protect private records behind a server that verifies Firebase ID tokens, or use Firebase services with correctly configured Security Rules.
 
-Saved scheme IDs are stored in browser local storage. Finder choices are used only to filter the current page and are not sent to a server.
+The Firebase Web app configuration in firebase-config.js is public by design. Never put service-account keys or other server credentials in client-side files. Google/Firebase processes phone numbers used for authentication to send verification SMS and help prevent abuse; carrier charges may apply. SchemeSaathi does not request Aadhaar numbers, income details, or government account credentials.
+
+SchemeSaathi is an independent guide, not a government service. The finder filters by selected topics and does not determine eligibility. The directory is curated and incomplete. Programme terms, benefits, documents, and application windows may change; confirm all details with the linked official source.
 
 ## Project files
 
-- \`index.html\` — site structure and content
-- \`styles.css\` — visual design and responsive layouts
-- \`scheme-data.js\` — curated scheme summaries and official links
-- \`app.js\` — search, filters, topic finder, saved schemes, and details
+- index.html — sign-in screen and protected site structure
+- firebase-config.js — public Firebase Web app configuration placeholder
+- app.js — authentication, search, filters, topic finder, saved schemes, and details
+- scheme-data.js — curated summaries and official links, loaded after sign-in
+- styles.css — visual design and responsive layouts
