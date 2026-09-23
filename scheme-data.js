@@ -94,5 +94,69 @@ window.SCHEMESAATHI_SCHEMES = [
     overview:"Coverage, premium, and timelines depend on the crop, location, season, and current notification.",
     nextStep:"Check whether your crop and area are notified this season and confirm the enrolment deadline on the official portal.",
     officialUrl:"https://pmfby.gov.in/",officialLabel:"PMFBY"
+  },
+  {
+    id:"national-scholarship-portal",name:"National Scholarship Portal",category:"education",categoryLabel:"Education & scholarships",icon:"✧",featured:13,
+    summary:"Browse central and state scholarships listed for students.",
+    audience:"Students looking for scholarship schemes currently listed on the portal. Availability, academic year, and eligibility criteria vary by scheme.",
+    overview:"The National Scholarship Portal is a government gateway for scholarship schemes offered by participating ministries, departments, and states.",
+    nextStep:"Open the current scheme list, check the academic year and application dates, and follow the portal's instructions if you decide to apply.",
+    officialUrl:"https://scholarships.gov.in/All-Scholarships",officialLabel:"National Scholarship Portal"
+  },
+  {
+    id:"nmms",name:"National Means-cum-Merit Scholarship",category:"education",categoryLabel:"Education & scholarships",icon:"✧",featured:14,
+    summary:"Merit-cum-means scholarship support for selected school students.",
+    audience:"Students selected through their State or Union Territory process who meet current school, income, and academic conditions.",
+    overview:"The centrally sponsored scholarship supports eligible students continuing their school education. State-level selection and current scheme rules apply.",
+    nextStep:"Check current selection details and application dates with your State or UT education department and on the National Scholarship Portal.",
+    officialUrl:"https://scholarships.gov.in/All-Scholarships",officialLabel:"National Scholarship Portal"
+  },
+  {
+    id:"pm-usp-csss",name:"PM-USP Central Sector Scholarship (CSSS)",category:"education",categoryLabel:"Education & scholarships",icon:"✧",featured:15,
+    summary:"Merit-cum-means scholarship support for eligible college students.",
+    audience:"Class XII students who meet the current board-performance, course, family-income, and other scheme requirements.",
+    overview:"The PM-USP Central Sector Scheme of Scholarship for College and University Students provides financial assistance to eligible students pursuing higher studies.",
+    nextStep:"Read the latest scheme specifications and FAQ, then check the current application window on the National Scholarship Portal.",
+    officialUrl:"https://scholarships.gov.in/All-Scholarships",officialLabel:"National Scholarship Portal"
+  },
+  {
+    id:"aicte-pragati",name:"AICTE Pragati Scholarship",category:"education",categoryLabel:"Education & scholarships",icon:"✧",featured:16,
+    summary:"Scholarship support for eligible girl students in technical education.",
+    audience:"Girl students in eligible AICTE-approved technical degree or diploma courses who meet current admission and scheme criteria.",
+    overview:"Pragati is an AICTE scholarship scheme for eligible girl students pursuing technical education. The applicable course level and conditions are set by the current scheme guidelines.",
+    nextStep:"Check the current Pragati scheme specification, institute requirements, and application dates on the National Scholarship Portal.",
+    officialUrl:"https://scholarships.gov.in/All-Scholarships",officialLabel:"National Scholarship Portal"
+  },
+  {
+    id:"aicte-saksham",name:"AICTE Saksham Scholarship",category:"education",categoryLabel:"Education & scholarships",icon:"✧",featured:17,
+    summary:"Scholarship support for eligible students with disabilities in technical education.",
+    audience:"Students with disabilities in eligible AICTE-approved technical degree or diploma courses, subject to current scheme requirements.",
+    overview:"Saksham is an AICTE scholarship scheme for eligible students with disabilities who pursue technical education.",
+    nextStep:"Review the current disability, course, institute, and application requirements on the National Scholarship Portal before applying.",
+    officialUrl:"https://scholarships.gov.in/All-Scholarships",officialLabel:"National Scholarship Portal"
+  },
+  {
+    id:"pm-yasasvi",name:"PM YASASVI Top Class Education",category:"education",categoryLabel:"Education & scholarships",icon:"✧",featured:18,
+    summary:"Education scholarship components for eligible OBC, EBC, and DNT students.",
+    audience:"Students covered by the relevant PM YASASVI school or college component who meet its current category, institution, and other criteria.",
+    overview:"The current portal lists separate Top Class Education components for school and college students. Their requirements and application cycles can differ.",
+    nextStep:"Select the relevant school or college component on the National Scholarship Portal and read its current specifications and dates.",
+    officialUrl:"https://scholarships.gov.in/All-Scholarships",officialLabel:"National Scholarship Portal"
+  },
+  {
+    id:"top-class-sc",name:"Top Class Education for SC Students",category:"education",categoryLabel:"Education & scholarships",icon:"✧",featured:19,
+    summary:"Scholarship support for eligible SC students in higher education.",
+    audience:"SC students admitted to eligible institutions and meeting the current scheme's academic and other requirements.",
+    overview:"The Central Sector scholarship supports eligible students pursuing higher education at institutions covered by the current guidelines.",
+    nextStep:"Check the current institution list, scheme rules, and application dates on the National Scholarship Portal.",
+    officialUrl:"https://scholarships.gov.in/All-Scholarships",officialLabel:"National Scholarship Portal"
+  },
+  {
+    id:"scholarships-disabilities",name:"Scholarships for Students with Disabilities",category:"education",categoryLabel:"Education & scholarships",icon:"✧",featured:20,
+    summary:"Pre-matric, post-matric, and higher-education scholarship options.",
+    audience:"Students with disabilities applying to a listed scholarship component, subject to that component's current eligibility criteria.",
+    overview:"The National Scholarship Portal lists different scholarship components for students with disabilities at different stages of education.",
+    nextStep:"Choose the relevant study-level component on the National Scholarship Portal and confirm its current documentation and deadlines.",
+    officialUrl:"https://scholarships.gov.in/All-Scholarships",officialLabel:"National Scholarship Portal"
   }
 ];

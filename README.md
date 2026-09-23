@@ -15,7 +15,8 @@ Then visit \`http://localhost:8000\`.
 ## Website features
 
 - Home page with clear paths into discovery
-- Topic finder for health, farming, housing and energy, women and family, and business
+- Topic finder for health, farming, housing and energy, women and family, business, and education
+- Scholarship listings for school and college students, with links to the live National Scholarship Portal
 - Searchable scheme directory with topic filters and sorting
 - Scheme detail dialogs with plain-language summaries and official links
 - Saved schemes stored locally in the current browser

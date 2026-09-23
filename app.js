@@ -8,7 +8,8 @@
     farmers:"For farmers",
     women:"Women & family",
     housing:"Home & energy",
-    business:"Work & business"
+    business:"Work & business",
+    education:"Education & scholarships"
   };
   const state = {
     category:"all",
