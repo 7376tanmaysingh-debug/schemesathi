@@ -422,7 +422,7 @@ import { firebaseConfig,isFirebaseConfigured } from "./firebase-config.js";
       await recaptchaVerifier.render();
       phoneConfirmation=await signInWithPhoneNumber(auth,phone,recaptchaVerifier);
       $("#otp-form").hidden=false; $("#send-phone-code").hidden=true; $("#otp-code").focus();
-      authMessage("We sent a code to "+phone+". Enter it below to continue.");
+      authMessage("If this is a Firebase test number, enter its configured code. Otherwise, check your SMS.");
     } catch(error) { clearRecaptcha(); authMessage(authError(error),"error"); }
     finally { authBusy(false); }
   }

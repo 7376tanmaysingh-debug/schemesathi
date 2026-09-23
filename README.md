@@ -6,17 +6,16 @@ A mobile-friendly guide to Indian public-benefit schemes and scholarships. Visit
 
 Serve the folder through a local web server; ES modules and Firebase Auth do not work when opened as a file URL. For example, use Python's built-in server on port 8000, then open http://localhost:8000.
 
-## Configure authentication
+## Firebase setup
 
-1. Create a Firebase project and register a Web app in Firebase Console.
-2. Copy the Web app configuration into firebase-config.js. This client configuration is public and is not a private server credential.
-3. In Authentication > Sign-in method, enable Email/Password, Google, and Phone.
-4. In Authentication > Settings, add your local development host and deployed site host to Authorized domains. Phone authentication does not work on localhost; test OTP on an authorized deployed domain or connect the Firebase Auth Emulator.
-5. Review the Phone authentication region policy and SMS limits. Link a Cloud Billing account to enable real SMS sending, and use Firebase test phone numbers during development.
-6. Deploy over HTTPS, then try email verification, Google sign-in, and phone OTP.
+The Firebase Web app configuration for this project is already in `firebase-config.js`. This browser configuration is public by design; never put a service-account key or other server credential in a client-side file.
 
-Until Firebase configuration is filled in, the sign-in screen remains visible and the site stays closed. Email/password accounts must verify their email before the site opens. Phone sign-in uses Firebase's reCAPTCHA verification.
+1. In Firebase Console, open **Authentication → Sign-in method** and enable **Email/Password**, **Google**, and **Phone**. Email sign-up sends a verification link; Google sign-in may ask you to choose a support email.
+2. Under **Authentication → Settings → Authorized domains**, add the hostname used by the deployed site: `schemesathi-two.vercel.app`. Add any replacement hostname too. Phone sign-in needs an authorized deployed domain; use the live HTTPS site rather than `localhost`.
+3. To test phone sign-in without SMS, open the Phone provider's **Phone numbers for testing** section. Add a fictional phone number and a six-digit verification code. Use that exact pair on the sign-in page. Firebase sends no SMS for a configured test number; any other number may receive a real SMS. Never use another person's number.
+4. Remove or rotate test numbers before launch. If you later enable real SMS, review the project's SMS region policy, quotas, and billing settings first.
 
+Until Firebase configuration is available, the sign-in screen stays visible and the site remains closed. Email/password accounts must verify their email before the site opens. Phone sign-in uses Firebase's reCAPTCHA verification.
 ## Website features
 
 - Guided topic finder for health, farming, housing and energy, women and family, business, education, and scholarships
